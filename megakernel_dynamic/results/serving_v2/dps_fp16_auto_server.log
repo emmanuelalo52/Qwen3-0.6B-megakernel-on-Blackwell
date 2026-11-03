@@ -1,0 +1,5 @@
+[serve_dps] loading Qwen/Qwen3-0.6B: weights=fp16 sched=auto backend=cuda
+Loading weights:   0%|          | 0/311 [00:00<?, ?it/s]Loading weights:  64%|██████▍   | 199/311 [00:00<00:00, 1724.69it/s]Loading weights: 100%|██████████| 311/311 [00:00<00:00, 2244.87it/s]
+[serve_dps] ready in 5.0 s (scheduler mode 2, grid 763744); serving on port 8000
+/venv/main/lib/python3.12/site-packages/fastapi/routing.py:152: FastAPIDeprecationWarning: ORJSONResponse is deprecated, FastAPI now serializes data directly to JSON bytes via Pydantic when a return type or response model is set, which is faster and doesn't need a custom response class. Read more in the FastAPI docs: https://fastapi.tiangolo.com/advanced/custom-response/#orjson-or-response-model and https://fastapi.tiangolo.com/tutorial/response-model/
+  response = await f(request)

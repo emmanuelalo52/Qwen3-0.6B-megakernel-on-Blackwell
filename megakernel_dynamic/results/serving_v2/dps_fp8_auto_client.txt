@@ -1,0 +1,144 @@
+[warning] .env not found, using defaults.
+=================================================================
+Benchmark of Steps 1 and 2
+=================================================================
+  Server           : http://localhost:8000
+  Model            : Qwen/Qwen3-0.6B
+  Client           : openai SDK  (vLLM-compatible)
+  Server           : Megakernel (fp8, auto)
+  dtype            : fp8
+  Requests         : 100
+  Concurrency      : 1  (sequential)
+  Max tokens/reply : 32
+  Temperature      : 0.0  (greedy)
+  Warm-up requests : 3  (not timed)
+  Log file         : megakernel_dynamic/results/serving_v2/dps_fp8_auto.json
+=================================================================
+
+[client] waiting for server at http://localhost:8000ready 
+
+  Req  Latency (s)  In tok  Out tok  Question
+  ---------------------------------------------------------------
+    1        0.026s      19        8  What is the capital of Norway?
+    2        0.051s      22       32  Who was the third German king of Ba
+    3        0.051s      23       32  Explain the theory of relativity in
+    4        0.051s      22       32  What is the speed of light in a vac
+    5        0.049s      20       32  Who wrote the novel Moby Dick?
+    6        0.033s      20       15  What year did World War II end?
+    7        0.031s      20       13  What is the chemical formula for wa
+    8        0.047s      18       32  Who painted the Mona Lisa?
+    9        0.050s      22       32  What is the largest planet in the s
+   10        0.049s      21       32  Who developed the theory of general
+   11        0.040s      22       21  What is the boiling point of water 
+   12        0.028s      19       11  What is the capital of Japan?
+   13        0.051s      23       32  Who was the first person to walk on
+   14        0.051s      23       32  What is the square root of 144?
+   15        0.046s      17       32  Who invented the telephone?
+   16        0.050s      21       32  What is the longest river in the wo
+   17        0.028s      19       11  What is the capital of Australia?
+   18        0.047s      18       32  Who wrote Romeo and Juliet?
+   19        0.050s      21       32  What is the hardest natural substan
+   20        0.050s      21       32  What is the smallest country in the
+   21        0.050s      22       31  Who was the first President of the 
+   22        0.040s      19       23  What is the currency of Japan?
+   23        0.050s      21       32  What is the tallest mountain in the
+   24        0.047s      18       32  Who discovered penicillin?
+   25        0.049s      20       32  What is the atomic number of carbon
+   26        0.026s      19        9  What language is spoken in Brazil?
+   27        0.025s      19        8  What is the capital of Canada?
+   28        0.047s      18       32  Who invented the light bulb?
+   29        0.051s      22       32  What is the distance from Earth to 
+   30        0.049s      20       32  Who composed Beethoven's Fifth Symp
+   31        0.027s      19       10  What is the capital of Germany?
+   32        0.049s      20       32  What is the largest ocean on Earth?
+   33        0.048s      19       32  Who was Napoleon Bonaparte?
+   34        0.049s      20       32  What is the powerhouse of the cell?
+   35        0.027s      19       10  What is the capital of France?
+   36        0.048s      20       32  Who wrote 1984?
+   37        0.029s      20       11  What is the chemical symbol for gol
+   38        0.049s      20       32  How many continents are there on Ea
+   39        0.050s      23       31  Who was the first woman to win a No
+   40        0.026s      19        9  What is the capital of Brazil?
+   41        0.046s      17       32  What is photosynthesis?
+   42        0.046s      17       32  Who invented the internet?
+   43        0.049s      20       32  What is the largest continent by ar
+   44        0.028s      19       11  What is the capital of China?
+   45        0.046s      17       32  Who was Julius Caesar?
+   46        0.049s      20       32  What is the Pythagorean theorem?
+   47        0.028s      19       11  What is the capital of India?
+   48        0.048s      19       32  Who wrote the Harry Potter series?
+   49        0.037s      22       18  What is the melting point of iron i
+   50        0.025s      19        8  What is the capital of Russia?
+   51        0.045s      16       32  Who discovered gravity?
+   52        0.028s      19       11  What is the capital of Italy?
+   53        0.050s      22       32  What is the primary gas in Earth's 
+   54        0.049s      20       32  Who built the Great Wall of China?
+   55        0.025s      19        8  What is the capital of Spain?
+   56        0.050s      22       32  How many bones are in the adult hum
+   57        0.047s      18       32  Who was Cleopatra?
+   58        0.028s      19       11  What is the capital of Egypt?
+   59        0.052s      24       32  What is the speed of sound in air a
+   60        0.047s      18       32  Who invented the steam engine?
+   61        0.028s      19       11  What is the capital of Mexico?
+   62        0.049s      21       32  What is DNA and what does it do?
+   63        0.046s      17       32  Who was Albert Einstein?
+   64        0.030s      20       12  What is the capital of South Korea?
+   65        0.049s      21       32  What is the largest desert in the w
+   66        0.048s      19       32  Who wrote the Iliad?
+   67        0.026s      19        9  What is the capital of Argentina?
+   68        0.052s      24       32  What is the function of the kidney 
+   69        0.046s      17       32  Who was Isaac Newton?
+   70        0.029s      19       11  What is the capital of Nigeria?
+   71        0.051s      22       32  What is the cruising speed of a com
+   72        0.047s      18       32  Who invented the printing press?
+   73        0.029s      19       12  What is the capital of Turkey?
+   74        0.048s      19       32  What is the theory of evolution?
+   75        0.047s      18       32  Who was Marie Curie?
+   76        0.031s      20       13  What is the capital of Saudi Arabia
+   77        0.029s      20       11  What is the chemical symbol for sil
+   78        0.048s      19       32  Who was Genghis Khan?
+   79        0.028s      19       11  What is the capital of Indonesia?
+   80        0.049s      20       32  What is the function of the heart?
+   81        0.047s      18       32  Who was Leonardo da Vinci?
+   82        0.025s      19        8  What is the capital of Pakistan?
+   83        0.049s      21       32  What is the largest mammal on Earth
+   84        0.048s      19       32  Who wrote Don Quixote?
+   85        0.030s      20       12  What is the capital of the Netherla
+   86        0.049s      21       32  What is the rotational speed of the
+   87        0.046s      17       32  Who was Socrates?
+   88        0.025s      19        8  What is the capital of Sweden?
+   89        0.029s      20       11  What is the chemical symbol for iro
+   90        0.046s      17       32  Who was Nikola Tesla?
+   91        0.028s      19       11  What is the capital of Poland?
+   92        0.034s      22       15  What is the largest organ in the hu
+   93        0.046s      17       32  Who invented the airplane?
+   94        0.028s      19       11  What is the capital of Ukraine?
+   95        0.048s      19       32  What is the Big Bang theory?
+   96        0.046s      17       32  Who was Charles Darwin?
+   97        0.028s      19       11  What is the capital of Greece?
+   98        0.029s      20       11  What is the chemical symbol for sod
+   99        0.045s      16       32  Who was Aristotle?
+  100        0.025s      19        8  What is the capital of Portugal?
+
+=================================================================
+LATENCY SUMMARY  Megakernel (fp8, auto)
+=================================================================
+  Requests sent      : 100
+  Successful         : 100
+  Failed             : 0
+  Average latency    : 0.041 s   <- primary metric
+  Median latency     : 0.046 s
+  Std deviation      : 0.010 s
+  Min latency        : 0.025 s
+  Max latency        : 0.052 s
+  P90 latency        : 0.050 s
+  Throughput         : 24.46 req/s
+  Output tokens      : 2415  (24.1 per request)
+  Tokens/s           : 558.8   (mean of output tokens / latency per request)
+  End-to-end tok/s   : 590.6   (all output tokens / all request time)
+  Wall time          : 4.09 s  (24.45 req/s incl. client overhead)
+=================================================================
+
+[client] Log saved to megakernel_dynamic/results/serving_v2/dps_fp8_auto.json
+[client] Compare two runs with: python compare_benchmarks.py <megakernel log> <baseline log>
+

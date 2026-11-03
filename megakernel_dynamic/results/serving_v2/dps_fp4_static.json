@@ -1,0 +1,1035 @@
+{
+  "meta": {
+    "step": "Megakernel (fp4, static)",
+    "label": "Megakernel (fp4, static)",
+    "server": "http://localhost:8000",
+    "model": "Qwen/Qwen3-0.6B",
+    "client": "openai SDK",
+    "dtype": "fp4",
+    "kernel": "Megakernel (fp4, static)",
+    "warmup": 3,
+    "concurrency": 1,
+    "max_tokens": 32,
+    "temperature": 0.0
+  },
+  "summary": {
+    "num_requests": 100,
+    "successful": 100,
+    "failed": 0,
+    "avg_latency_s": 0.025,
+    "median_latency_s": 0.0286,
+    "std_latency_s": 0.0066,
+    "min_latency_s": 0.0153,
+    "max_latency_s": 0.0324,
+    "throughput_rps": 39.9381,
+    "p90_latency_s": 0.0312,
+    "output_tokens": 2377,
+    "mean_output_tokens": 23.77,
+    "tokens_per_s": 888.46,
+    "e2e_tokens_per_s": 949.51,
+    "wall_time_s": 2.5056,
+    "wall_rps": 39.9104
+  },
+  "requests": [
+    {
+      "index": 0,
+      "question": "What is the capital of Norway?",
+      "answer": "The capital of Norway is Oslo.",
+      "latency_s": 0.0154,
+      "prompt_tokens": 19,
+      "output_tokens": 8,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 1,
+      "question": "Who was the third German king of Bavaria?",
+      "answer": "The third German king of Bavaria was **Reimar von Hohenstedt** (Reimar von H\u00f6hstedt). He ruled from 12",
+      "latency_s": 0.0312,
+      "prompt_tokens": 22,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 2,
+      "question": "Explain the theory of relativity in simple terms.",
+      "answer": "Sure! Let's break it down in simple terms:\n\n**The Theory of Relativity** is about how things behave differently depending on how you look at them.",
+      "latency_s": 0.0317,
+      "prompt_tokens": 23,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 3,
+      "question": "What is the speed of light in a vacuum?",
+      "answer": "The speed of light in a vacuum is approximately **299,792,458 meters per second (km/s)**. This value is",
+      "latency_s": 0.0312,
+      "prompt_tokens": 22,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 4,
+      "question": "Who wrote the novel Moby Dick?",
+      "answer": "The novel *Moby Dick* was written by **Edith Wharton**. It was published in 1902.",
+      "latency_s": 0.0277,
+      "prompt_tokens": 20,
+      "output_tokens": 28,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 5,
+      "question": "What year did World War II end?",
+      "answer": "The year World War II ended was **1945**.",
+      "latency_s": 0.02,
+      "prompt_tokens": 20,
+      "output_tokens": 15,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 6,
+      "question": "What is the chemical formula for water?",
+      "answer": "The chemical formula for water is H\u2082O. This represents two hydrogen atoms bonded to one oxygen atom.",
+      "latency_s": 0.0241,
+      "prompt_tokens": 20,
+      "output_tokens": 22,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 7,
+      "question": "Who painted the Mona Lisa?",
+      "answer": "The Mona Lisa is a famous painting by **Leonardo da Vinci**. It was created in the 15th century and is one of the most iconic",
+      "latency_s": 0.0291,
+      "prompt_tokens": 18,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 8,
+      "question": "What is the largest planet in the solar system?",
+      "answer": "The largest planet in the solar system is **Saturn**. It is the second largest planet after Jupiter, and it is also the largest in terms of mass",
+      "latency_s": 0.0312,
+      "prompt_tokens": 22,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 9,
+      "question": "Who developed the theory of general relativity?",
+      "answer": "The theory of general relativity was developed by Albert Einstein, who was a German physicist. This theory fundamentally changed our understanding of gravity and space-time.",
+      "latency_s": 0.0301,
+      "prompt_tokens": 21,
+      "output_tokens": 31,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 10,
+      "question": "What is the boiling point of water in Celsius?",
+      "answer": "The boiling point of water is **100\u00b0C** at standard atmospheric pressure.",
+      "latency_s": 0.0228,
+      "prompt_tokens": 22,
+      "output_tokens": 18,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 11,
+      "question": "What is the capital of Japan?",
+      "answer": "The capital of Japan is Tokyo.",
+      "latency_s": 0.0153,
+      "prompt_tokens": 19,
+      "output_tokens": 8,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 12,
+      "question": "Who was the first person to walk on the moon?",
+      "answer": "The first person to walk on the Moon was **Neil Armstrong** of the United States. He was part of the Apollo 11 mission, which successfully landed",
+      "latency_s": 0.0317,
+      "prompt_tokens": 23,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 13,
+      "question": "What is the square root of 144?",
+      "answer": "The square root of 144 is:\n\n$$\n\\sqrt{144} = 12\n$$\n\nSo, the square root of",
+      "latency_s": 0.0317,
+      "prompt_tokens": 23,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 14,
+      "question": "Who invented the telephone?",
+      "answer": "The invention of the telephone is credited to Alexander Graham Bell. He is known for creating the first practical telephone, which was a significant advancement in communication technology. The",
+      "latency_s": 0.0285,
+      "prompt_tokens": 17,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 15,
+      "question": "What is the longest river in the world?",
+      "answer": "The longest river in the world is the Nile River, which flows through the countries of Egypt, Sudan, and Ethiopia. It is also known as the Niger River",
+      "latency_s": 0.0306,
+      "prompt_tokens": 21,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 16,
+      "question": "What is the capital of Australia?",
+      "answer": "The capital of Australia is Canberra.",
+      "latency_s": 0.0154,
+      "prompt_tokens": 19,
+      "output_tokens": 8,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 17,
+      "question": "Who wrote Romeo and Juliet?",
+      "answer": "Romeo and Juliet is a play written by William Shakespeare. It was first performed in 1595 by John Webster and later performed again in ",
+      "latency_s": 0.029,
+      "prompt_tokens": 18,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 18,
+      "question": "What is the hardest natural substance on Earth?",
+      "answer": "The hardest natural substance on Earth is **limestone**. It is composed primarily of calcium carbonate (CaCO\u2083), and it is known for its hardness",
+      "latency_s": 0.0307,
+      "prompt_tokens": 21,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 19,
+      "question": "What is the smallest country in the world?",
+      "answer": "The smallest country in the world is **Hainan**. It is located in China and is one of the smallest countries in the world.",
+      "latency_s": 0.0295,
+      "prompt_tokens": 21,
+      "output_tokens": 30,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 20,
+      "question": "Who was the first President of the United States?",
+      "answer": "The first President of the United States was George Washington. He served from 1789 to 1797.",
+      "latency_s": 0.0282,
+      "prompt_tokens": 22,
+      "output_tokens": 27,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 21,
+      "question": "What is the currency of Japan?",
+      "answer": "The currency of Japan is the yen (JPY).",
+      "latency_s": 0.0177,
+      "prompt_tokens": 19,
+      "output_tokens": 12,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 22,
+      "question": "What is the tallest mountain in the world?",
+      "answer": "The tallest mountain in the world is Mount Everest, located in the Himalayas in the Indian Himalayas. It is the highest peak of the Himalayas and is",
+      "latency_s": 0.0306,
+      "prompt_tokens": 21,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 23,
+      "question": "Who discovered penicillin?",
+      "answer": "Penicillin was discovered by Alexander Fleming in 1928. He is known for his work in the field of bacteriology and his discovery of pen",
+      "latency_s": 0.0291,
+      "prompt_tokens": 18,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 24,
+      "question": "What is the atomic number of carbon?",
+      "answer": "The atomic number of carbon is **12**. This is because carbon has 12 protons in its nucleus, making it the element with atomic number",
+      "latency_s": 0.0301,
+      "prompt_tokens": 20,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 25,
+      "question": "What language is spoken in Brazil?",
+      "answer": "The language spoken in Brazil is Portuguese.",
+      "latency_s": 0.016,
+      "prompt_tokens": 19,
+      "output_tokens": 9,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 26,
+      "question": "What is the capital of Canada?",
+      "answer": "The capital of Canada is Ottawa.",
+      "latency_s": 0.0154,
+      "prompt_tokens": 19,
+      "output_tokens": 8,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 27,
+      "question": "Who invented the light bulb?",
+      "answer": "The invention of the light bulb is attributed to Nikola Tesla, a Serbian inventor and electrical engineer. He is known for his work in the field of electrical engineering and",
+      "latency_s": 0.029,
+      "prompt_tokens": 18,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 28,
+      "question": "What is the distance from Earth to the Sun?",
+      "answer": "The distance from Earth to the Sun is approximately **1 astronomical unit (AU)**, which is the average distance between the Earth and the Sun as measured in the",
+      "latency_s": 0.0313,
+      "prompt_tokens": 22,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 29,
+      "question": "Who composed Beethoven's Fifth Symphony?",
+      "answer": "Beethoven's Fifth Symphony was composed by **Joseph Haydn**. It was completed in 1794 and premiered in 1795.",
+      "latency_s": 0.0301,
+      "prompt_tokens": 20,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 30,
+      "question": "What is the capital of Germany?",
+      "answer": "The capital of Germany is Berlin.",
+      "latency_s": 0.0153,
+      "prompt_tokens": 19,
+      "output_tokens": 8,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 31,
+      "question": "What is the largest ocean on Earth?",
+      "answer": "The largest ocean on Earth is the **Pacific Ocean**. It covers approximately **12.5% of the Earth's surface** and is the largest in",
+      "latency_s": 0.0301,
+      "prompt_tokens": 20,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 32,
+      "question": "Who was Napoleon Bonaparte?",
+      "answer": "Napoleon Bonaparte was a French military leader and statesman who played a significant role in the French Revolution and the Napoleonic Wars. He is",
+      "latency_s": 0.0295,
+      "prompt_tokens": 19,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 33,
+      "question": "What is the powerhouse of the cell?",
+      "answer": "The powerhouse of the cell is the **cell's mitochondria**. This organelle is responsible for producing energy in the form of ATP (adenosine",
+      "latency_s": 0.0301,
+      "prompt_tokens": 20,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 34,
+      "question": "What is the capital of France?",
+      "answer": "The capital of France is Paris.",
+      "latency_s": 0.0154,
+      "prompt_tokens": 19,
+      "output_tokens": 8,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 35,
+      "question": "Who wrote 1984?",
+      "answer": "The book *1984* was written by **George Orwell**.",
+      "latency_s": 0.0211,
+      "prompt_tokens": 20,
+      "output_tokens": 17,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 36,
+      "question": "What is the chemical symbol for gold?",
+      "answer": "The chemical symbol for gold is **Au**.",
+      "latency_s": 0.0176,
+      "prompt_tokens": 20,
+      "output_tokens": 11,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 37,
+      "question": "How many continents are there on Earth?",
+      "answer": "There are **14 continents** on Earth. These include continents such as Asia, Africa, North America, South America, Europe, Australia, and the Pacific",
+      "latency_s": 0.0301,
+      "prompt_tokens": 20,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 38,
+      "question": "Who was the first woman to win a Nobel Prize?",
+      "answer": "The first woman to win a Nobel Prize in history was **Marie Curie** in 1903. She was awarded the Nobel Prize in Physics",
+      "latency_s": 0.0317,
+      "prompt_tokens": 23,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 39,
+      "question": "What is the capital of Brazil?",
+      "answer": "The capital of Brazil is Bras\u00edlia.",
+      "latency_s": 0.0159,
+      "prompt_tokens": 19,
+      "output_tokens": 9,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 40,
+      "question": "What is photosynthesis?",
+      "answer": "Photosynthesis is the process by which plants, algae, and some bacteria use sunlight to convert water and carbon dioxide into glucose and oxygen. The overall equation for this",
+      "latency_s": 0.0285,
+      "prompt_tokens": 17,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 41,
+      "question": "Who invented the internet?",
+      "answer": "The invention of the internet is often attributed to the work of several individuals and organizations. The first major computer network that was created was the ARPANET, which",
+      "latency_s": 0.0285,
+      "prompt_tokens": 17,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 42,
+      "question": "What is the largest continent by area?",
+      "answer": "The largest continent by area is **Asia**. It covers about 30% of the Earth's total surface area, making it the largest continent.",
+      "latency_s": 0.0301,
+      "prompt_tokens": 20,
+      "output_tokens": 32,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 43,
+      "question": "What is the capital of China?",
+      "answer": "The capital of China is Beijing.",
+      "latency_s": 0.0154,
+      "prompt_tokens": 19,
+      "output_tokens": 8,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 44,
+      "question": "Who was Julius Caesar?",
+      "answer": "Julius Caesar was a Roman general and statesman who played a significant role in the early history of Rome. He is often remembered for his military campaigns and his",
+      "latency_s": 0.0284,
+      "prompt_tokens": 17,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 45,
+      "question": "What is the Pythagorean theorem?",
+      "answer": "The **Pythagorean theorem** is a fundamental principle in mathematics that states:\n\n> In a right-angled triangle, the square of the length of the hyp",
+      "latency_s": 0.0303,
+      "prompt_tokens": 20,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 46,
+      "question": "What is the capital of India?",
+      "answer": "The capital of India is New Delhi.",
+      "latency_s": 0.016,
+      "prompt_tokens": 19,
+      "output_tokens": 9,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 47,
+      "question": "Who wrote the Harry Potter series?",
+      "answer": "The Harry Potter series was written by **J.K. Rowling**. She is a British author who has written several books, including the Harry Potter series. The",
+      "latency_s": 0.0295,
+      "prompt_tokens": 19,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 48,
+      "question": "What is the melting point of iron in Celsius?",
+      "answer": "The melting point of iron (Fe) is **-452.8\u00b0C**. This is the temperature at which iron transitions from a solid to a",
+      "latency_s": 0.0312,
+      "prompt_tokens": 22,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 49,
+      "question": "What is the capital of Russia?",
+      "answer": "The capital of Russia is Moscow.",
+      "latency_s": 0.0153,
+      "prompt_tokens": 19,
+      "output_tokens": 8,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 50,
+      "question": "Who discovered gravity?",
+      "answer": "The question of who discovered gravity is a bit of a historical puzzle. While Newtonian physics is often taught in schools as the foundation of classical mechanics, the actual",
+      "latency_s": 0.0279,
+      "prompt_tokens": 16,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 51,
+      "question": "What is the capital of Italy?",
+      "answer": "The capital of Italy is Rome.",
+      "latency_s": 0.0154,
+      "prompt_tokens": 19,
+      "output_tokens": 8,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 52,
+      "question": "What is the primary gas in Earth's atmosphere?",
+      "answer": "The primary gas in Earth's atmosphere is **nitrogen**. This is because about 78% of Earth's air is composed of nitrogen, and about",
+      "latency_s": 0.0311,
+      "prompt_tokens": 22,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 53,
+      "question": "Who built the Great Wall of China?",
+      "answer": "The Great Wall of China was built by the Chinese government. It was constructed by the Chinese government to protect the country from invasions by the Japanese and other foreign",
+      "latency_s": 0.0301,
+      "prompt_tokens": 20,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 54,
+      "question": "What is the capital of Spain?",
+      "answer": "The capital of Spain is Madrid.",
+      "latency_s": 0.0153,
+      "prompt_tokens": 19,
+      "output_tokens": 8,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 55,
+      "question": "How many bones are in the adult human body?",
+      "answer": "The adult human body contains **206 bones**. These bones make up the skeleton and support the body's structure and function. The exact number is a",
+      "latency_s": 0.0313,
+      "prompt_tokens": 22,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 56,
+      "question": "Who was Cleopatra?",
+      "answer": "Cleopatra was a powerful and influential woman in ancient Egypt, known for her political and military achievements. She was the daughter of Ptolemy and",
+      "latency_s": 0.0291,
+      "prompt_tokens": 18,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 57,
+      "question": "What is the capital of Egypt?",
+      "answer": "The capital of Egypt is Cairo.",
+      "latency_s": 0.0154,
+      "prompt_tokens": 19,
+      "output_tokens": 8,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 58,
+      "question": "What is the speed of sound in air at sea level?",
+      "answer": "The speed of sound in air at sea level is approximately **343 meters per second (m/s)**. This value is commonly used in many scientific and",
+      "latency_s": 0.0322,
+      "prompt_tokens": 24,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 59,
+      "question": "Who invented the steam engine?",
+      "answer": "The invention of the steam engine is attributed to James Watt, a Scottish engineer and inventor of the 18th century. He is known for developing the first",
+      "latency_s": 0.0291,
+      "prompt_tokens": 18,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 60,
+      "question": "What is the capital of Mexico?",
+      "answer": "The capital of Mexico is Mexico City.",
+      "latency_s": 0.0159,
+      "prompt_tokens": 19,
+      "output_tokens": 9,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 61,
+      "question": "What is DNA and what does it do?",
+      "answer": "DNA (Deoxyribonucleic DNA) is a nucleic acid molecule that stores and transmits hereditary information. It is composed of nucleotide units",
+      "latency_s": 0.0306,
+      "prompt_tokens": 21,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 62,
+      "question": "Who was Albert Einstein?",
+      "answer": "Albert Einstein was a German physicist and theorist who made significant contributions to the understanding of physics, relativity, and quantum mechanics. He is often referred to as",
+      "latency_s": 0.0285,
+      "prompt_tokens": 17,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 63,
+      "question": "What is the capital of South Korea?",
+      "answer": "The capital of South Korea is Seoul.",
+      "latency_s": 0.0164,
+      "prompt_tokens": 20,
+      "output_tokens": 9,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 64,
+      "question": "What is the largest desert in the world?",
+      "answer": "The largest desert in the world is not a single desert, but rather a vast region that spans across multiple countries. The largest desert is the **Gulf of",
+      "latency_s": 0.0306,
+      "prompt_tokens": 21,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 65,
+      "question": "Who wrote the Iliad?",
+      "answer": "The *Iliad* is a part of the *Greek epic poem* *The Iliad* and *The Odyssey*. It was written by **",
+      "latency_s": 0.0295,
+      "prompt_tokens": 19,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 66,
+      "question": "What is the capital of Argentina?",
+      "answer": "The capital of Argentina is Buenos Aires.",
+      "latency_s": 0.0159,
+      "prompt_tokens": 19,
+      "output_tokens": 9,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 67,
+      "question": "What is the function of the kidney in the human body?",
+      "answer": "The kidneys are vital organs in the human body and play several important roles:\n\n1. **Filtering excess fluid and salts**: The kidneys filter about 15",
+      "latency_s": 0.0324,
+      "prompt_tokens": 24,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 68,
+      "question": "Who was Isaac Newton?",
+      "answer": "Isaac Newton was a British mathematician and physicist who lived in the late 16th to early 17th centuries. He is known for his",
+      "latency_s": 0.0286,
+      "prompt_tokens": 17,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 69,
+      "question": "What is the capital of Nigeria?",
+      "answer": "The capital of Nigeria is Abuja.",
+      "latency_s": 0.0159,
+      "prompt_tokens": 19,
+      "output_tokens": 9,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 70,
+      "question": "What is the cruising speed of a commercial airplane?",
+      "answer": "The cruising speed of a commercial airplane depends on the type of aircraft, its design, and its intended use. For example, a commercial jet like the Boeing ",
+      "latency_s": 0.0312,
+      "prompt_tokens": 22,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 71,
+      "question": "Who invented the printing press?",
+      "answer": "The printing press was invented by Johannes Gutenberg, a German scientist and artist who lived in the 14th century. He is known for creating movable type,",
+      "latency_s": 0.029,
+      "prompt_tokens": 18,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 72,
+      "question": "What is the capital of Turkey?",
+      "answer": "The capital of Turkey is Ankara.",
+      "latency_s": 0.0153,
+      "prompt_tokens": 19,
+      "output_tokens": 8,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 73,
+      "question": "What is the theory of evolution?",
+      "answer": "The theory of evolution is a scientific theory that explains how life on Earth has developed over time through the process of natural selection. It is a process by which organisms",
+      "latency_s": 0.0295,
+      "prompt_tokens": 19,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 74,
+      "question": "Who was Marie Curie?",
+      "answer": "Marie Curie was a French scientist and physicist who made significant contributions to the field of radioactivity. She is best known for discovering radioactivity and the element",
+      "latency_s": 0.029,
+      "prompt_tokens": 18,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 75,
+      "question": "What is the capital of Saudi Arabia?",
+      "answer": "The capital of Saudi Arabia is **Ras al-Salat al-Aqaba**.",
+      "latency_s": 0.0229,
+      "prompt_tokens": 20,
+      "output_tokens": 20,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 76,
+      "question": "What is the chemical symbol for silver?",
+      "answer": "The chemical symbol for silver is **Ag**.",
+      "latency_s": 0.0176,
+      "prompt_tokens": 20,
+      "output_tokens": 11,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 77,
+      "question": "Who was Genghis Khan?",
+      "answer": "Genghis Khan was a Mongol leader who ruled from 1215 to 1231. He is often referred to as the \"",
+      "latency_s": 0.0296,
+      "prompt_tokens": 19,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 78,
+      "question": "What is the capital of Indonesia?",
+      "answer": "The capital of Indonesia is Jakarta.",
+      "latency_s": 0.0153,
+      "prompt_tokens": 19,
+      "output_tokens": 8,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 79,
+      "question": "What is the function of the heart?",
+      "answer": "The heart is a muscular organ that plays a vital role in the body's regulation of the circulatory system. Its primary functions include:\n\n1. **Heartbeat",
+      "latency_s": 0.0301,
+      "prompt_tokens": 20,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 80,
+      "question": "Who was Leonardo da Vinci?",
+      "answer": "Leonardo da Vinci (1452\u20131512) was an Italian Renaissance artist and scientist, known for his innovative approach to art and science",
+      "latency_s": 0.0295,
+      "prompt_tokens": 18,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 81,
+      "question": "What is the capital of Pakistan?",
+      "answer": "The capital of Pakistan is Islamabad.",
+      "latency_s": 0.0158,
+      "prompt_tokens": 19,
+      "output_tokens": 8,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 82,
+      "question": "What is the largest mammal on Earth?",
+      "answer": "The largest mammal on Earth is the **blue whale**. It is a marine mammal that can grow up to **20 meters long** and weigh",
+      "latency_s": 0.0307,
+      "prompt_tokens": 21,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 83,
+      "question": "Who wrote Don Quixote?",
+      "answer": "Don Quixote was written by **Freddy Quix**. He was a Spanish writer and a member of the Spanish Inquisition. The novel was",
+      "latency_s": 0.0296,
+      "prompt_tokens": 19,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 84,
+      "question": "What is the capital of the Netherlands?",
+      "answer": "The capital of the Netherlands is Amsterdam.",
+      "latency_s": 0.0165,
+      "prompt_tokens": 20,
+      "output_tokens": 9,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 85,
+      "question": "What is the rotational speed of the Earth?",
+      "answer": "The Earth's rotational speed is approximately **25.7 revolutions per minute (RPM)**. This is because the Earth completes one full rotation around its axis",
+      "latency_s": 0.0307,
+      "prompt_tokens": 21,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 86,
+      "question": "Who was Socrates?",
+      "answer": "Socrates was a Greek philosopher who lived around 475 BCE to 415 BCE. He is known for his methodical approach to learning and",
+      "latency_s": 0.0285,
+      "prompt_tokens": 17,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 87,
+      "question": "What is the capital of Sweden?",
+      "answer": "The capital of Sweden is Stockholm.",
+      "latency_s": 0.0154,
+      "prompt_tokens": 19,
+      "output_tokens": 8,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 88,
+      "question": "What is the chemical symbol for iron?",
+      "answer": "The chemical symbol for iron is **Fe**.",
+      "latency_s": 0.0176,
+      "prompt_tokens": 20,
+      "output_tokens": 11,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 89,
+      "question": "Who was Nikola Tesla?",
+      "answer": "Nikola Tesla was a Serbian inventor and electrical engineer who lived in the late 19th and early 20th centuries. He is best known",
+      "latency_s": 0.0285,
+      "prompt_tokens": 17,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 90,
+      "question": "What is the capital of Poland?",
+      "answer": "The capital of Poland is Warsaw.",
+      "latency_s": 0.0153,
+      "prompt_tokens": 19,
+      "output_tokens": 8,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 91,
+      "question": "What is the largest organ in the human body?",
+      "answer": "The largest organ in the human body is the **lungs**. It is responsible for gas exchange, oxygenation, and carbon dioxide removal. While other organs",
+      "latency_s": 0.0312,
+      "prompt_tokens": 22,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 92,
+      "question": "Who invented the airplane?",
+      "answer": "The invention of the airplane is attributed to the Wright brothers, who were the first successful pilots to fly a controlled, powered aircraft. They achieved this in 1",
+      "latency_s": 0.0286,
+      "prompt_tokens": 17,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 93,
+      "question": "What is the capital of Ukraine?",
+      "answer": "The capital of Ukraine is Kyiv.",
+      "latency_s": 0.016,
+      "prompt_tokens": 19,
+      "output_tokens": 9,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 94,
+      "question": "What is the Big Bang theory?",
+      "answer": "The Big Bang theory is a scientific explanation for the origin of the universe and the early state of the universe. It is based on observations from cosmic microwave background radiation",
+      "latency_s": 0.0296,
+      "prompt_tokens": 19,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 95,
+      "question": "Who was Charles Darwin?",
+      "answer": "Charles Darwin was an English naturalist and scientist who lived in the 19th century. He is best known for his work on evolution and the theory of",
+      "latency_s": 0.0285,
+      "prompt_tokens": 17,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 96,
+      "question": "What is the capital of Greece?",
+      "answer": "The capital of Greece is Athens.",
+      "latency_s": 0.0154,
+      "prompt_tokens": 19,
+      "output_tokens": 8,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 97,
+      "question": "What is the chemical symbol for sodium?",
+      "answer": "The chemical symbol for sodium is **Na**.",
+      "latency_s": 0.0176,
+      "prompt_tokens": 20,
+      "output_tokens": 11,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 98,
+      "question": "Who was Aristotle?",
+      "answer": "Aristotle (341\u2013314 BCE) was a Greek philosopher and scientist who lived in ancient Greece. He is often referred to as the",
+      "latency_s": 0.028,
+      "prompt_tokens": 16,
+      "output_tokens": 32,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 99,
+      "question": "What is the capital of Portugal?",
+      "answer": "The capital of Portugal is Lisbon.",
+      "latency_s": 0.0153,
+      "prompt_tokens": 19,
+      "output_tokens": 8,
+      "finish_reason": "stop",
+      "error": null
+    }
+  ]
+}

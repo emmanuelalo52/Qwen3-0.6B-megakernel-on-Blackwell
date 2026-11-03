@@ -1,0 +1,99 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+##### weights=fp16  [NVIDIA B200] stage=32768 B x 6, claim-ahead 1, smem 212864 B
+=== backend=cuda scheduler=atomic weights=fp16
+  OK  prompt= 19 tok | ref   9 / ours   9 tokens, 9 leading match | sched=atomic grid=148
+      ours: 'The capital of France is **Paris**.'
+  OK  prompt= 23 tok | ref  39 / ours  39 tokens, 39 leading match | sched=atomic grid=148
+      ours: "The sky appears blue because of the way sunlight interacts with the Earth's atmosphere, scattering shorter wav"
+  OK  prompt= 19 tok | ref  14 / ours  14 tokens, 14 leading match | sched=atomic grid=148
+      ours: 'GPU —  \nPower of the cloud,  \nSpeed in the data.'
+  OK  prompt=371 tok | ref  22 / ours  22 tokens, 22 leading match | sched=atomic grid=148
+      ours: 'The notes summarize that shared memory is fast, global memory is large, and L2 cache sits between them.'
+  latency: 136.0 ms for 23-token prompt + 128 new tokens (907 us per token step, single launch)
+=== backend=cuda scheduler=static weights=fp16
+  OK  prompt= 19 tok | ref   9 / ours   9 tokens, 9 leading match | sched=static grid=148
+      ours: 'The capital of France is **Paris**.'
+  OK  prompt= 23 tok | ref  39 / ours  39 tokens, 39 leading match | sched=static grid=148
+      ours: "The sky appears blue because of the way sunlight interacts with the Earth's atmosphere, scattering shorter wav"
+  OK  prompt= 19 tok | ref  14 / ours  14 tokens, 14 leading match | sched=static grid=148
+      ours: 'GPU —  \nPower of the cloud,  \nSpeed in the data.'
+  OK  prompt=371 tok | ref  22 / ours  22 tokens, 22 leading match | sched=static grid=148
+      ours: 'The notes summarize that shared memory is fast, global memory is large, and L2 cache sits between them.'
+  latency: 88.7 ms for 23-token prompt + 128 new tokens (592 us per token step, single launch)
+=== backend=cuda scheduler=clc weights=fp16
+  OK  prompt= 19 tok | ref   9 / ours   9 tokens, 9 leading match | sched=clc grid=1121424
+      ours: 'The capital of France is **Paris**.'
+  OK  prompt= 23 tok | ref  39 / ours  39 tokens, 39 leading match | sched=clc grid=1185936
+      ours: "The sky appears blue because of the way sunlight interacts with the Earth's atmosphere, scattering shorter wav"
+  OK  prompt= 19 tok | ref  14 / ours  14 tokens, 14 leading match | sched=clc grid=1121424
+      ours: 'GPU —  \nPower of the cloud,  \nSpeed in the data.'
+  OK  prompt=371 tok | ref  22 / ours  22 tokens, 22 leading match | sched=clc grid=6798480
+      ours: 'The notes summarize that shared memory is fast, global memory is large, and L2 cache sits between them.'
+  latency: 128.6 ms for 23-token prompt + 128 new tokens (857 us per token step, single launch)
+
+##### weights=fp8  [NVIDIA B200] stage=16896 B x 11, claim-ahead 1, smem 202368 B
+=== backend=cuda scheduler=atomic weights=fp8
+  OK  prompt= 19 tok | ref   9 / ours   9 tokens, 9 leading match | vs fp16 model: 9/9 leading | sched=atomic grid=148
+      ours: 'The capital of France is **Paris**.'
+  OK  prompt= 23 tok | ref  48 / ours  48 tokens, 48 leading match | vs fp16 model: 8/39 leading | sched=atomic grid=148
+      ours: "The sky appears blue because of the way light interacts with the Earth's atmosphere, where shorter wavelengths"
+  OK  prompt= 19 tok | ref  12 / ours  12 tokens, 12 leading match | vs fp16 model: 1/14 leading | sched=atomic grid=148
+      ours: 'GPU—**power** in the **data** world.'
+  OK  prompt=371 tok | ref  22 / ours  22 tokens, 22 leading match | vs fp16 model: 0/22 leading | sched=atomic grid=148
+      ours: 'GPU memory architecture features shared memory (fast and large) and L2 cache (between shared and global memory'
+  latency: 140.9 ms for 23-token prompt + 128 new tokens (940 us per token step, single launch)
+=== backend=cuda scheduler=static weights=fp8
+  OK  prompt= 19 tok | ref   9 / ours   9 tokens, 9 leading match | vs fp16 model: 9/9 leading | sched=static grid=148
+      ours: 'The capital of France is **Paris**.'
+  OK  prompt= 23 tok | ref  48 / ours  48 tokens, 48 leading match | vs fp16 model: 8/39 leading | sched=static grid=148
+      ours: "The sky appears blue because of the way light interacts with the Earth's atmosphere, where shorter wavelengths"
+  OK  prompt= 19 tok | ref  12 / ours  12 tokens, 12 leading match | vs fp16 model: 1/14 leading | sched=static grid=148
+      ours: 'GPU—**power** in the **data** world.'
+  OK  prompt=371 tok | ref  22 / ours  22 tokens, 22 leading match | vs fp16 model: 0/22 leading | sched=static grid=148
+      ours: 'GPU memory architecture features shared memory (fast and large) and L2 cache (between shared and global memory'
+  latency: 90.1 ms for 23-token prompt + 128 new tokens (601 us per token step, single launch)
+=== backend=cuda scheduler=clc weights=fp8
+  OK  prompt= 19 tok | ref   9 / ours   9 tokens, 9 leading match | vs fp16 model: 9/9 leading | sched=clc grid=1121424
+      ours: 'The capital of France is **Paris**.'
+  OK  prompt= 23 tok | ref  48 / ours  48 tokens, 48 leading match | vs fp16 model: 8/39 leading | sched=clc grid=1185936
+      ours: "The sky appears blue because of the way light interacts with the Earth's atmosphere, where shorter wavelengths"
+  OK  prompt= 19 tok | ref  12 / ours  12 tokens, 12 leading match | vs fp16 model: 1/14 leading | sched=clc grid=1121424
+      ours: 'GPU—**power** in the **data** world.'
+  OK  prompt=371 tok | ref  22 / ours  22 tokens, 22 leading match | vs fp16 model: 0/22 leading | sched=clc grid=6798480
+      ours: 'GPU memory architecture features shared memory (fast and large) and L2 cache (between shared and global memory'
+  latency: 142.8 ms for 23-token prompt + 128 new tokens (952 us per token step, single launch)
+
+##### weights=fp4  [NVIDIA B200] stage=9216 B x 16, claim-ahead 1, smem 164096 B
+=== backend=cuda scheduler=atomic weights=fp4
+  OK  prompt= 19 tok | ref   7 / ours   7 tokens, 7 leading match | vs fp16 model: 5/9 leading | sched=atomic grid=148
+      ours: 'The capital of France is Paris.'
+  OK  prompt= 23 tok | ref  48 / ours  48 tokens, 48 leading match | vs fp16 model: 16/39 leading | sched=atomic grid=148
+      ours: "The sky appears blue because of the way sunlight interacts with the Earth's atmosphere, creating a blue hue th"
+  OK  prompt= 19 tok | ref  48 / ours  48 tokens, 48 leading match | vs fp16 model: 1/14 leading | sched=atomic grid=148
+      ours: 'GPU (Graphics Processing Unit) is a powerful computing component that enables powerful processing of graphics '
+  OK  prompt=371 tok | ref  22 / ours  22 tokens, 22 leading match | vs fp16 model: 2/22 leading | sched=atomic grid=148
+      ours: 'The notes all mention that shared memory is fast, global memory is large, and L2 sits between them.'
+  latency: 144.6 ms for 23-token prompt + 128 new tokens (964 us per token step, single launch)
+=== backend=cuda scheduler=static weights=fp4
+  OK  prompt= 19 tok | ref   7 / ours   7 tokens, 7 leading match | vs fp16 model: 5/9 leading | sched=static grid=148
+      ours: 'The capital of France is Paris.'
+  OK  prompt= 23 tok | ref  48 / ours  48 tokens, 48 leading match | vs fp16 model: 16/39 leading | sched=static grid=148
+      ours: "The sky appears blue because of the way sunlight interacts with the Earth's atmosphere, creating a blue hue th"
+  OK  prompt= 19 tok | ref  48 / ours  48 tokens, 48 leading match | vs fp16 model: 1/14 leading | sched=static grid=148
+      ours: 'GPU (Graphics Processing Unit) is a powerful computing component that enables powerful processing of graphics '
+  OK  prompt=371 tok | ref  22 / ours  22 tokens, 22 leading match | vs fp16 model: 2/22 leading | sched=static grid=148
+      ours: 'The notes all mention that shared memory is fast, global memory is large, and L2 sits between them.'
+  latency: 92.2 ms for 23-token prompt + 128 new tokens (615 us per token step, single launch)
+=== backend=cuda scheduler=clc weights=fp4
+  OK  prompt= 19 tok | ref   7 / ours   7 tokens, 7 leading match | vs fp16 model: 5/9 leading | sched=clc grid=1121424
+      ours: 'The capital of France is Paris.'
+  OK  prompt= 23 tok | ref  48 / ours  48 tokens, 48 leading match | vs fp16 model: 16/39 leading | sched=clc grid=1185936
+      ours: "The sky appears blue because of the way sunlight interacts with the Earth's atmosphere, creating a blue hue th"
+  OK  prompt= 19 tok | ref  48 / ours  48 tokens, 48 leading match | vs fp16 model: 1/14 leading | sched=clc grid=1121424
+      ours: 'GPU (Graphics Processing Unit) is a powerful computing component that enables powerful processing of graphics '
+  OK  prompt=371 tok | ref  22 / ours  22 tokens, 22 leading match | vs fp16 model: 2/22 leading | sched=clc grid=6798480
+      ours: 'The notes all mention that shared memory is fast, global memory is large, and L2 sits between them.'
+  latency: 148.0 ms for 23-token prompt + 128 new tokens (987 us per token step, single launch)
+
+PASS

@@ -2,7 +2,7 @@
 
 Custom CUDA megakernel for Qwen3-0.6B inference on RTX 5090, benchmarked against vLLM's standard PagedAttention baseline.
 
-> **New: dynamic persistent megakernel for B200.** [`megakernel_dynamic/`](megakernel_dynamic/) rebuilds this kernel around CUTLASS's Blackwell dynamic persistent tile scheduler (cluster launch control). It has no grid barriers, runs a whole request in one launch, and supports fp16, fp8 (MXF8) and fp4 (NVF4) weights, in CUDA (a CuTeDSL port does not run on B200 yet). First B200 results: 825 us per token step at fp16 and 947 us at fp4 with a claim-ahead-1 build, token-for-token identical to HF transformers ([benchmarks](#benchmark-results-b200-batch-1)). See [Dynamic Persistent Megakernel (B200)](#dynamic-persistent-megakernel-b200) below.
+> **New: dynamic persistent megakernel for B200.** [`megakernel_dynamic/`](megakernel_dynamic/) rebuilds this kernel around CUTLASS's Blackwell dynamic persistent tile scheduler (cluster launch control). It has no grid barriers, runs a whole request in one launch, and supports fp16, fp8 (MXF8) and fp4 (NVF4) weights, in CUDA (a CuTeDSL port does not run correctly on B200 yet). Served on a B200 it answers the same 100 prompts in **0.024 s on average, 1.84x faster than vLLM with CUDA graphs** and 13x faster than vLLM in eager mode, with 97 of 100 answers identical to vLLM's ([B200 results](#benchmark-results-b200-float16-32-max-tokens)). See [Dynamic Persistent Megakernel (B200)](#dynamic-persistent-megakernel-b200) below.
 
 ## Benchmark Results (RTX 5090, float16, 32 max tokens)
 
@@ -14,6 +14,22 @@ Custom CUDA megakernel for Qwen3-0.6B inference on RTX 5090, benchmarked against
 | Throughput (end-to-end) | 402.6 tok/s | 199.3 tok/s | **2.0x** |
 | Req/s | 17.04 | 8.33 | **2.0x** |
 | Variance (min to max) | 0.048-0.058s | 0.048-0.162s | 10x tighter |
+
+## Benchmark Results (B200, float16, 32 max tokens)
+
+The dynamic persistent megakernel ([`megakernel_dynamic/`](megakernel_dynamic/), `static` scheduler) against vLLM 0.33.0, both served over HTTP, the same 100 prompts sent one at a time by `client_benchmark.py`, greedy, 3 untimed warm-up requests per server:
+
+| Metric | Megakernel | vLLM (CUDA graphs) | vLLM (enforce-eager) | Speedup vs CUDA graphs | Speedup vs eager |
+|---|---|---|---|---|---|
+| Avg latency | 0.024s | 0.045s | 0.324s | **1.84x** | **13.3x** |
+| Median latency | 0.028s | 0.055s | 0.416s | **2.0x** | **15.1x** |
+| P90 latency | 0.030s | 0.056s | 0.435s | **1.85x** | **14.4x** |
+| Tokens/sec (per request) | 930.8 | 509.4 | 72.7 | **1.83x** | **12.8x** |
+| Throughput (end-to-end) | 983.4 tok/s | 535.4 tok/s | 74.1 tok/s | **1.84x** | **13.3x** |
+| Req/s | 40.92 | 22.28 | 3.08 | **1.84x** | **13.3x** |
+| Variance (min to max) | 0.015-0.031s | 0.023-0.062s | 0.120-0.459s | | |
+
+The megakernel's answers are identical to vLLM's (CUDA graphs) on 97 of 100 prompts, and both count output tokens the same way (24.0 per request on average). CUDA graphs make vLLM 7.2x faster than eager on this GPU, so they are the fair baseline here; the RTX 5090 table compared against eager only. Logs, profiles and the full comparison: [`megakernel_dynamic/results/serving_v2/`](megakernel_dynamic/results/serving_v2/), and [B200 benchmarks](megakernel_dynamic/README.md#b200-benchmarks) for the details.
 
 ---
 
@@ -53,6 +69,8 @@ qwen_megakernel/
     ├── test_dps.py             # Token-level check against HF transformers + latency
     ├── trace_dps.py            # Per-tile timeline (DPS_TRACE build)
     ├── hang_probe.py           # Progress counters of a hung CuTeDSL launch
+    ├── run_b200.sh             # A whole B200 session in one command (setup, tests, traces, serving)
+    ├── results/                # Logs, traces, serving logs and profiles from the B200 runs
     ├── cuda/                   # CUDA C++ version (dps_scheduler.cuh, qwen_dps_megakernel.cu, setup.py)
     └── cutedsl/                # CuTeDSL version (qwen_dps_cutedsl.py)
 ```
@@ -563,19 +581,15 @@ python megakernel_dynamic/test_dps.py --backend cutedsl
 
 ### Benchmark results (B200, batch 1)
 
-CUDA version, greedy decoding, whole request in one launch. Microseconds per token step for a 23-token prompt + 128 new tokens (1000 us per step is about 1000 tokens/s):
+CUDA version, greedy decoding, whole request in one launch. Microseconds per token step for a 23-token prompt + 128 new tokens (1000 us per step is about 1000 tokens/s), every configuration token-exact against HF transformers:
 
-| weights | atomic scheduler | CLC scheduler | CLC, claim-ahead 1 |
-|---|---|---|---|
-| fp16 | 1096 us | 1101 us | **825 us** |
-| fp8 | 976 us | 941 us | not measured |
-| fp4 | 1419 us | 1448 us | **947 us** |
+| weights | atomic scheduler | static scheduler | CLC scheduler | first B200 run (CLC) |
+|---|---|---|---|---|
+| fp16 | 907 us | **592 us** | 857 us | 1101 us |
+| fp8 | 940 us | **601 us** | 952 us | 941 us |
+| fp4 | 964 us | **615 us** | 987 us | 1448 us |
 
-These are not comparable with the RTX 5090 table at the top: different GPU, different kernel, and no vLLM baseline was run on the B200.
-
-Per-tile traces (`megakernel_dynamic/trace_dps.py`) show where the time goes. Weights are always in shared memory before a tile needs them, a tile computes in ~1.5-1.9 us, and phases hand off in ~0.25 us. But the SMs spend 56-69% of each step waiting on dependencies, because claiming 6-12 tiles ahead hands each phase's tiles out unevenly: the busiest SM gets 2-3x its share and the phase waits for it. Claiming one tile ahead (`DPS_SSTAGES=1`) cut the step by 25% (fp16) and 35% (fp4). Full tables: [`megakernel_dynamic/README.md`](megakernel_dynamic/README.md#b200-benchmarks).
-
-Since this run, the kernel claims one tile ahead by default, every phase fits in one round of tiles across the B200's 148 SMs, and a `static` scheduler mode gives each SM exactly one tile per phase. None of that has been measured on a B200 yet: [changes since the B200 run](megakernel_dynamic/README.md#changes-since-the-b200-run).
+The first B200 run's per-tile traces (`megakernel_dynamic/trace_dps.py`) showed where the time went. Tiles computed in ~1.5-1.9 us and phases handed off in ~0.25 us, yet the SMs spent 56-69% of each step waiting on dependencies: each phase took 2-3 rounds of tiles, and claiming 6-12 tiles ahead handed them out unevenly, so the busiest SM got 2-3x its share. The redesign makes every phase fit in one round across the 148 SMs and adds a `static` scheduler that gives each SM exactly one tile per phase. With it, the GEMV phases take 2-3 us instead of 6-12, and a token step 592 us instead of 1101. The dynamic schedulers improved much less, because a CTA still holds the tile it claimed next. Attention (~30% of a step) and the LM head (~11%) are what is left to attack. Full tables, traces and profiles: [`megakernel_dynamic/README.md`](megakernel_dynamic/README.md#b200-benchmarks).
 
 ### Serving benchmark against vLLM (B200)
 
@@ -602,8 +616,11 @@ Then, with the megakernel built (see above), from the repository root:
 VLLM_BIN=/venv/vllm/bin/vllm bash bench_serving.sh
 ```
 
+Or run the whole B200 session, including this benchmark, with `megakernel_dynamic/run_b200.sh`.
+The results of the last run are in the [B200 table](#benchmark-results-b200-float16-32-max-tokens) at the top.
+
 It serves each megakernel configuration (`DPS_CONFIGS`, default fp16, fp8 and fp4 with the
-default scheduler) and vLLM twice: `--enforce-eager` as in the RTX 5090 comparison, and with
+default scheduler; add e.g. `fp16:static` for the static scheduler) and vLLM twice: `--enforce-eager` as in the RTX 5090 comparison, and with
 CUDA graphs, vLLM's default and the stronger baseline. Each server gets 3 untimed warm-up
 requests, then the 100 timed ones (`MAX_TOKENS=32` as in the 5090 table). The logs and
 `comparison.md` land in `megakernel_dynamic/results/serving_<date>/`. To compare any two
@@ -622,7 +639,7 @@ vLLM, so they compare speed at different precision.
 
 ### Status
 
-Verified on a B200 (CUDA version): greedy tokens match HF transformers exactly for fp16, and for fp8/fp4 they match HF running the dequantized weights, with both the CLC and atomic schedulers. The kernel is still latency-bound, far from the weight-bandwidth floor (~144 us per step at fp16), so there is more to gain. The CuTeDSL version deadlocked on B200. The cause was a CuTeDSL tracing pitfall: the work ring's position was advanced inside a helper function, which the DSL does not carry into the next loop iteration, so the warps kept re-reading one ring slot. That is fixed and compiles, but has not run on a B200 yet. Details and raw logs: [`megakernel_dynamic/README.md`](megakernel_dynamic/README.md#verification-status).
+Verified on a B200 (CUDA version): greedy tokens match HF transformers exactly for fp16, and for fp8/fp4 they match HF running the dequantized weights, with the atomic, static and CLC schedulers. The static scheduler is the fastest; the default (`auto`) still means CLC on sm_100, so pass `DPS_SCHED=static`. The kernel is still latency-bound, well above the weight-bandwidth floor (~144 us per step at fp16), so there is more to gain. The CuTeDSL version first deadlocked because the work ring's position was advanced inside a helper function, which the DSL does not carry into the next loop iteration. With that fixed it gets much further, through layer 0's attention and O-proj, but still stalls in gate/up. With debug markers (extra global stores) enabled, it runs to completion, which points to a race or missing memory ordering. Not fixed yet. Details and raw logs: [`megakernel_dynamic/README.md`](megakernel_dynamic/README.md#verification-status).
 
 ---
 

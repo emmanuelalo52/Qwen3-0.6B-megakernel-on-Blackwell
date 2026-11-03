@@ -1,0 +1,79 @@
+fp16 atomic: compiled + launched in 1.8 s; prompt 19 tokens -> 18 prefill steps, 679704 tiles in the launch
+
+read 1 at +3.8 s
+  ticket           892  next ticket would be: step 0, layer 0, down tile 60
+  qkv[0]            32  = next: step 0 layer 1, 0/32 done
+  qkv[1]            32  = next: step 0 layer 1, 0/32 done
+  qkv[2]            32  = next: step 0 layer 1, 0/32 done
+  qkv[3]            32  = next: step 0 layer 1, 0/32 done
+  qkv[4]            32  = next: step 0 layer 1, 0/32 done
+  qkv[5]            32  = next: step 0 layer 1, 0/32 done
+  qkv[6]            32  = next: step 0 layer 1, 0/32 done
+  qkv[7]            32  = next: step 0 layer 1, 0/32 done
+  asplit[0]          8  = next: step 0 layer 1, 0/8 done
+  asplit[1]          8  = next: step 0 layer 1, 0/8 done
+  asplit[2]          8  = next: step 0 layer 1, 0/8 done
+  asplit[3]          8  = next: step 0 layer 1, 0/8 done
+  asplit[4]          8  = next: step 0 layer 1, 0/8 done
+  asplit[5]          8  = next: step 0 layer 1, 0/8 done
+  asplit[6]          8  = next: step 0 layer 1, 0/8 done
+  asplit[7]          8  = next: step 0 layer 1, 0/8 done
+  attn               8  = next: step 0 layer 1, 0/8 done
+  oproj            128  = next: step 0 layer 1, 0/128 done
+  gateup           148  = next: step 0 layer 0, 148/384 done
+  down               0  = next: step 0 layer 0, 0/256 done
+  lm_arrive          0  = 0 decode steps + 0/2374
+  lm_done            0  = 0 decode steps + 0/1
+  eos                0
+
+read 2 at +5.8 s  (no change since last read)
+  ticket           892  next ticket would be: step 0, layer 0, down tile 60
+  qkv[0]            32  = next: step 0 layer 1, 0/32 done
+  qkv[1]            32  = next: step 0 layer 1, 0/32 done
+  qkv[2]            32  = next: step 0 layer 1, 0/32 done
+  qkv[3]            32  = next: step 0 layer 1, 0/32 done
+  qkv[4]            32  = next: step 0 layer 1, 0/32 done
+  qkv[5]            32  = next: step 0 layer 1, 0/32 done
+  qkv[6]            32  = next: step 0 layer 1, 0/32 done
+  qkv[7]            32  = next: step 0 layer 1, 0/32 done
+  asplit[0]          8  = next: step 0 layer 1, 0/8 done
+  asplit[1]          8  = next: step 0 layer 1, 0/8 done
+  asplit[2]          8  = next: step 0 layer 1, 0/8 done
+  asplit[3]          8  = next: step 0 layer 1, 0/8 done
+  asplit[4]          8  = next: step 0 layer 1, 0/8 done
+  asplit[5]          8  = next: step 0 layer 1, 0/8 done
+  asplit[6]          8  = next: step 0 layer 1, 0/8 done
+  asplit[7]          8  = next: step 0 layer 1, 0/8 done
+  attn               8  = next: step 0 layer 1, 0/8 done
+  oproj            128  = next: step 0 layer 1, 0/128 done
+  gateup           148  = next: step 0 layer 0, 148/384 done
+  down               0  = next: step 0 layer 0, 0/256 done
+  lm_arrive          0  = 0 decode steps + 0/2374
+  lm_done            0  = 0 decode steps + 0/1
+  eos                0
+
+read 3 at +7.8 s  (no change since last read)
+  ticket           892  next ticket would be: step 0, layer 0, down tile 60
+  qkv[0]            32  = next: step 0 layer 1, 0/32 done
+  qkv[1]            32  = next: step 0 layer 1, 0/32 done
+  qkv[2]            32  = next: step 0 layer 1, 0/32 done
+  qkv[3]            32  = next: step 0 layer 1, 0/32 done
+  qkv[4]            32  = next: step 0 layer 1, 0/32 done
+  qkv[5]            32  = next: step 0 layer 1, 0/32 done
+  qkv[6]            32  = next: step 0 layer 1, 0/32 done
+  qkv[7]            32  = next: step 0 layer 1, 0/32 done
+  asplit[0]          8  = next: step 0 layer 1, 0/8 done
+  asplit[1]          8  = next: step 0 layer 1, 0/8 done
+  asplit[2]          8  = next: step 0 layer 1, 0/8 done
+  asplit[3]          8  = next: step 0 layer 1, 0/8 done
+  asplit[4]          8  = next: step 0 layer 1, 0/8 done
+  asplit[5]          8  = next: step 0 layer 1, 0/8 done
+  asplit[6]          8  = next: step 0 layer 1, 0/8 done
+  asplit[7]          8  = next: step 0 layer 1, 0/8 done
+  attn               8  = next: step 0 layer 1, 0/8 done
+  oproj            128  = next: step 0 layer 1, 0/128 done
+  gateup           148  = next: step 0 layer 0, 148/384 done
+  down               0  = next: step 0 layer 0, 0/256 done
+  lm_arrive          0  = 0 decode steps + 0/2374
+  lm_done            0  = 0 decode steps + 0/1
+  eos                0

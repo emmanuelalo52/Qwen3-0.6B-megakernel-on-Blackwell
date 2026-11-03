@@ -128,6 +128,10 @@ megakernel_dynamic/
   qwen_dps.py               DpsDecoder: weight loading, MXF8/NVF4 quantization, layer table, generate()
   test_dps.py               greedy-token comparison against HF transformers + latency, per weight format
   trace_dps.py              per-tile timeline (DPS_TRACE build): where a token step's time goes
+  serve_dps.py              OpenAI-compatible server, for the comparison with vLLM (../bench_serving.sh)
+  hang_probe.py             reads a hung CuTeDSL launch's progress counters and per-CTA markers
+  run_b200.sh               a whole B200 session in one command: setup, tests, traces, serving vs vLLM
+  results/                  logs, traces and profiles from the B200 runs (b200_*, b200_v2_*, *_v2/)
   cuda/
     dps_arch.cuh            PTX wrappers: mbarrier, cp.async.bulk, CLC; mbarrier/TMA emulation below sm_90
     dps_scheduler.cuh       DynamicPersistentTileScheduler (port of the CuTeDSL class + fetch ring)
@@ -138,6 +142,19 @@ megakernel_dynamic/
 ```
 
 ## Build and run on the B200 server
+
+The quickest way: clone the repository on the B200 and run everything in the background with
+`run_b200.sh` (about 45 minutes; results land in `results/` under the run's date):
+
+```bash
+nohup bash megakernel_dynamic/run_b200.sh > run_b200.log 2>&1 &
+```
+
+```bash
+tail -f run_b200.log
+```
+
+The steps it runs, one by one:
 
 Requires CUDA 12.8+ (the B200 run used 13.2), PyTorch with CUDA, `transformers`, and
 `nvidia-cutlass-dsl==4.4.0` for the CuTeDSL backend. 4.4.0 is the version the backend
@@ -218,16 +235,74 @@ overhead is visible. `--load traces/*.npz` re-runs the analysis on saved traces 
 
 ## B200 benchmarks
 
-One vast.ai B200 (148 SMs), CUDA 13.2, PyTorch 2.14.1+cu130, batch 1, greedy decoding, the whole
-request in one launch. CUDA backend only (the CuTeDSL backend did not run yet, see
-[Verification status](#verification-status)). Raw logs and traces are in `results/`.
+Two runs on vast.ai B200s (148 SMs), batch 1, greedy decoding, the whole request in one
+launch, CUDA backend (the CuTeDSL backend does not run correctly yet, see
+[Verification status](#verification-status)). Raw logs, traces and profiles are in `results/`.
+The first run found the bottleneck; the second measures the redesign that came out of it.
 
-These runs used the original design: 256 / 64 / 128 / 384 / 256 tiles per layer for QKV /
-attention / O-proj / gate-up / down, and a default claim-ahead of 6 (scaled to 11-12 for
-fp8/fp4). The code has changed since, based on what they showed; see
-[Changes since the B200 run](#changes-since-the-b200-run).
+### Current design (second B200 run)
 
-### Latency per token step
+2026-11-03, driver 580, CUDA 13.0, PyTorch 2.14.1+cu130, vLLM 0.33.0. Files: `results/b200_v2_*`,
+`serving_v2/`, `traces_v2/`, `profiles_v2/`. The whole session is one script, `run_b200.sh`.
+
+**Serving against vLLM.** `bench_serving.sh`: the 100 prompts from `prompt.py`, one request at
+a time, greedy, at most 32 new tokens, 3 untimed warm-up requests per server
+(`serving_v2/comparison_vs_vllm_graphs.md`):
+
+| Metric | Megakernel fp16, `static` | Megakernel fp16, `clc` (default) | vLLM, CUDA graphs | vLLM, eager |
+|---|---|---|---|---|
+| Avg latency | **0.024 s** | 0.036 s | 0.045 s | 0.324 s |
+| Median latency | **0.028 s** | 0.040 s | 0.055 s | 0.416 s |
+| P90 latency | **0.030 s** | 0.044 s | 0.056 s | 0.435 s |
+| Tokens/s (per request) | **931** | 636 | 509 | 73 |
+| End-to-end throughput | **983 tok/s** | 672 tok/s | 535 tok/s | 74 tok/s |
+| Req/s | **40.9** | 28.0 | 22.3 | 3.1 |
+| Latency min-max | 0.015-0.031 s | 0.022-0.046 s | 0.023-0.062 s | 0.120-0.459 s |
+| Avg latency vs vLLM with CUDA graphs | **1.84x faster** | 1.25x faster | - | 7.2x slower |
+
+The fp16 megakernel's answers are identical to vLLM's (CUDA graphs) on 97 of 100 prompts;
+vLLM eager and vLLM with graphs agree on 98. Both servers count output tokens the same way
+(24.0 per request on average). fp8 and fp4 weights are no faster (0.025 s, static), since the
+kernel is latency-bound, and they change the answers (43 and 13 of 100 identical).
+
+**Latency per token step** (`test_dps.py`, 23-token prompt + 128 new tokens in one launch;
+every format and scheduler token-exact against HF transformers; `b200_v2_cuda.txt`):
+
+| weights | `atomic` | `static` | `clc` | first run, `clc` |
+|---|---|---|---|---|
+| fp16 | 907 us | **592 us** | 857 us | 1101 us |
+| fp8 | 940 us | **601 us** | 952 us | 941 us |
+| fp4 | 964 us | **615 us** | 987 us | 1448 us |
+
+**Where the time goes now** (`trace_dps.py`, 8 decode steps; `b200_v2_traces.txt`):
+
+- `static`: the busiest SM runs exactly 1 tile per phase (128 of 148 SMs used), and phases take
+  2.2-3.4 us instead of 6-12. SM time: 52% running tiles, 45% waiting on dependencies.
+- `atomic` / `clc`: the busiest SM still gets 2 tiles of each phase. A CTA holds its current
+  tile plus the one it claimed next, and consecutive tickets often land on the same CTA. That
+  is why the dynamic modes barely moved, and why `static` is the scheduler to use on B200. The
+  default (`auto`) still means CLC on sm_100+, so pass `sched="static"` / `DPS_SCHED=static`.
+- fp16 `static`, 577 us per traced step: attention 175 us (6.2 us per layer: it waits for each
+  KV head's QKV group, then the last split combines the others), gate/up 102, down 88, QKV 82,
+  O-proj 67, LM head 63. Attention and the LM head are the next targets.
+
+**Profiles** (Nsight Systems, `profiles_v2/`). The megakernel runs one kernel per request
+(~22.5 ms each over the 100 prompts), so the client's 0.024 s is that kernel plus ~1.5 ms of
+tokenization, HTTP and copies. vLLM with CUDA graphs runs ~296,000 kernels for 20 requests,
+about 600 per forward pass, averaging ~5 us each (mostly cuBLAS GEMMs and FlashAttention).
+Graph replay removes launch overhead, but each of those kernels still starts, fills the GPU
+and drains. Profiling slows vLLM down (0.106 s per request under node-level tracing), so read
+the profiles for structure and the table above for speed. Nsight Compute could not run: the
+host blocks access to GPU performance counters (`ERR_NVGPUCTRPERM`).
+
+### First B200 run (original design)
+
+2026-10-05, CUDA 13.2, PyTorch 2.14.1+cu130. This run used the original design: 256 / 64 /
+128 / 384 / 256 tiles per layer for QKV / attention / O-proj / gate-up / down, and a default
+claim-ahead of 6 (scaled to 11-12 for fp8/fp4). What it showed led to the
+[changes after the first B200 run](#changes-after-the-first-b200-run).
+
+#### Latency per token step
 
 `test_dps.py`: 23-token prompt + 128 new tokens in one launch, total time divided by the 150
 token steps (the 22 prefill steps skip the LM head). 1000 us per step is about 1000 tokens/s.
@@ -243,7 +318,7 @@ scaled up to 12 for the smaller fp8/fp4 tiles). The last column was built with
 `DPS_SSTAGES=1 python setup.py build_ext --inplace` and gives the same tokens. It is not the
 default yet: fp8 and the `atomic` scheduler have not been measured with it.
 
-### Where a token step goes
+#### Where a token step goes
 
 `trace_dps.py` with the default claim-ahead: every tile of 8 decode steps, taken after the
 first 16 decode steps of the launch. "Untraced" is the same decode on the normal build.
@@ -282,9 +357,10 @@ of 1.7. Claiming one tile ahead should keep the hand-out close to even, which is
 source of the 25-35% above; a trace with claim-ahead 1 has not been taken yet. The CLC and
 atomic schedulers behave the same here, because both claim ahead the same way.
 
-## Changes since the B200 run
+## Changes after the first B200 run
 
-Not yet measured on a B200. Each change follows from the traces above:
+Each change follows from the first run's traces. The second run measured them; see
+[Current design](#current-design-second-b200-run).
 
 1. **Claim-ahead 1 by default, for every format.** A CTA also claims a ticket only once its
    work ring has a free slot for it. Before, the scheduler warp claimed its next ticket and
@@ -296,29 +372,13 @@ Not yet measured on a B200. Each change follows from the traces above:
    atomics, launched cooperatively so all CTAs are resident. With phases of at most G tiles,
    every CTA gets at most one tile per phase by construction. It is also the static baseline
    to compare CLC against.
-4. **CuTeDSL deadlock fixed** (compiles for sm_100a with CuTeDSL 4.4.0 and 4.8.0; not run yet).
-   See [Verification status](#verification-status).
+4. **CuTeDSL work-ring fix.** See [Verification status](#verification-status).
 
-How much the first two buy is open. From the traces: with the original tile sizes and a
-perfectly even hand-out, a token step would still take ~0.52 ms (5 phases x 28 layers of
-1-3 rounds of ~1.7 us tiles, plus ~0.25 us hand-offs and ~70 us of LM head). One round per
-phase is meant to go below that, since the extra weight per tile streams in during the
-dependency wait. The next B200 session measures it:
-
-```bash
-python megakernel_dynamic/test_dps.py
-```
-
-```bash
-python megakernel_dynamic/test_dps.py --backend cutedsl
-```
-
-```bash
-python megakernel_dynamic/trace_dps.py --formats fp16,fp8,fp4 --out-dir traces
-```
-
-`trace_dps.py` now also prints the hand-out balance per phase (tiles on the busiest SM
-against the even share), which is the number the changes above are meant to fix.
+Measured: with `static`, a fp16 token step went from 1101 us to 592 us (-46%), within ~15% of
+the ~0.52 ms the first traces put as the floor for the old tile sizes with a perfectly even
+hand-out. The dynamic modes improved much less (857-907 us at fp16), because a CTA still
+holds two tickets, so the busiest SM gets two tiles of a phase. The CuTeDSL fix got the
+kernel past the original hang, but it now stalls later (below).
 
 ## Verification status
 
@@ -338,7 +398,7 @@ Done locally on a GTX 1650 (sm_75, so no CLC or TMA hardware):
   (CLC), `UBLKCP` (TMA bulk copy), `SYNCS.*` (mbarrier tx), and for fp8/fp4
   `F2FP.F16.E4M3/E2M1.UNPACK_B` + `FHFMA` in the GEMV.
 
-After the [changes since the B200 run](#changes-since-the-b200-run), locally (GTX 1650):
+After the [changes after the first B200 run](#changes-after-the-first-b200-run), locally (GTX 1650):
 
 - CUDA backend: greedy tokens identical to HF for fp16, fp8 and fp4 with the `atomic` and
   `static` schedulers, and for fp16 with `oneshot` (28 of 28 prompt checks).
@@ -348,7 +408,21 @@ After the [changes since the B200 run](#changes-since-the-b200-run), locally (GT
 - sm_100a: CUDA 100-114 registers (trace build 110-122), no spills or local memory;
   CuTeDSL compiles all six variants with 4.4.0 and 4.8.0 in ~1-2 s each.
 
-On a B200 (2026-10-05, CUDA 13.2, PyTorch 2.14.1+cu130; raw logs in `results/`):
+Second B200 run (2026-11-03, current code; `results/b200_v2_*`):
+
+- CUDA backend: greedy tokens identical to HF transformers (fp16) and to HF running the
+  dequantized weights (fp8/fp4) for every format with the `atomic`, `static` and `clc`
+  schedulers (36 of 36 prompt checks). Served, the fp16 answers match vLLM's on 97 of 100
+  prompts. Timings: [Current design](#current-design-second-b200-run).
+- CuTeDSL backend: the work-ring fix below works. The kernel now gets through layer 0's QKV,
+  attention and O-proj with every counter complete (`b200_v2_hang_probe.txt`), then stops with
+  148 of 384 gate/up tiles done, 148 being the number of CTAs. With `DPS_CRUMBS=1`, which adds
+  per-CTA position markers (global stores), the same launch runs to completion
+  (`b200_v2_hang_probe_markers.txt`; whether its tokens are right was not checked). A hang that
+  extra stores make disappear points to a race or a missing memory ordering, not to a logic
+  error in the schedule. Not fixed yet.
+
+First B200 run (2026-10-05, CUDA 13.2, PyTorch 2.14.1+cu130; raw logs in `results/`):
 
 - CUDA backend: greedy tokens identical to HF transformers (fp16) and to HF running the
   dequantized weights (fp8/fp4) on every test prompt, with both the `atomic` and `clc`

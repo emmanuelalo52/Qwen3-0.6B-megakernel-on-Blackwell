@@ -1,0 +1,1271 @@
+
+######## 10:36:21 clone
+5bb05f5 Merge branch 'design-fixes': serving benchmark against vLLM
+
+######## 10:36:24 vLLM install (background, own venv)
+
+######## 10:36:24 megakernel env
+torch 2.14.1+cu130 13.0 NVIDIA B200
+
+######## 10:36:46 build normal + trace modules
+megakernel_dynamic/cuda/qwen_dps_C.cpython-312-x86_64-linux-gnu.so
+megakernel_dynamic/cuda/qwen_dps_trace_C.cpython-312-x86_64-linux-gnu.so
+
+######## 10:37:26 test_dps CUDA
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+##### weights=fp16  [NVIDIA B200] stage=32768 B x 6, claim-ahead 1, smem 212864 B
+=== backend=cuda scheduler=atomic weights=fp16
+  OK  prompt= 19 tok | ref   9 / ours   9 tokens, 9 leading match | sched=atomic grid=148
+      ours: 'The capital of France is **Paris**.'
+  OK  prompt= 23 tok | ref  39 / ours  39 tokens, 39 leading match | sched=atomic grid=148
+      ours: "The sky appears blue because of the way sunlight interacts with the Earth's atmosphere, scattering shorter wav"
+  OK  prompt= 19 tok | ref  14 / ours  14 tokens, 14 leading match | sched=atomic grid=148
+      ours: 'GPU —  \nPower of the cloud,  \nSpeed in the data.'
+  OK  prompt=371 tok | ref  22 / ours  22 tokens, 22 leading match | sched=atomic grid=148
+      ours: 'The notes summarize that shared memory is fast, global memory is large, and L2 cache sits between them.'
+  latency: 136.0 ms for 23-token prompt + 128 new tokens (907 us per token step, single launch)
+=== backend=cuda scheduler=static weights=fp16
+  OK  prompt= 19 tok | ref   9 / ours   9 tokens, 9 leading match | sched=static grid=148
+      ours: 'The capital of France is **Paris**.'
+  OK  prompt= 23 tok | ref  39 / ours  39 tokens, 39 leading match | sched=static grid=148
+      ours: "The sky appears blue because of the way sunlight interacts with the Earth's atmosphere, scattering shorter wav"
+  OK  prompt= 19 tok | ref  14 / ours  14 tokens, 14 leading match | sched=static grid=148
+      ours: 'GPU —  \nPower of the cloud,  \nSpeed in the data.'
+  OK  prompt=371 tok | ref  22 / ours  22 tokens, 22 leading match | sched=static grid=148
+      ours: 'The notes summarize that shared memory is fast, global memory is large, and L2 cache sits between them.'
+  latency: 88.7 ms for 23-token prompt + 128 new tokens (592 us per token step, single launch)
+=== backend=cuda scheduler=clc weights=fp16
+  OK  prompt= 19 tok | ref   9 / ours   9 tokens, 9 leading match | sched=clc grid=1121424
+      ours: 'The capital of France is **Paris**.'
+  OK  prompt= 23 tok | ref  39 / ours  39 tokens, 39 leading match | sched=clc grid=1185936
+      ours: "The sky appears blue because of the way sunlight interacts with the Earth's atmosphere, scattering shorter wav"
+  OK  prompt= 19 tok | ref  14 / ours  14 tokens, 14 leading match | sched=clc grid=1121424
+      ours: 'GPU —  \nPower of the cloud,  \nSpeed in the data.'
+  OK  prompt=371 tok | ref  22 / ours  22 tokens, 22 leading match | sched=clc grid=6798480
+      ours: 'The notes summarize that shared memory is fast, global memory is large, and L2 cache sits between them.'
+  latency: 128.6 ms for 23-token prompt + 128 new tokens (857 us per token step, single launch)
+
+##### weights=fp8  [NVIDIA B200] stage=16896 B x 11, claim-ahead 1, smem 202368 B
+=== backend=cuda scheduler=atomic weights=fp8
+  OK  prompt= 19 tok | ref   9 / ours   9 tokens, 9 leading match | vs fp16 model: 9/9 leading | sched=atomic grid=148
+      ours: 'The capital of France is **Paris**.'
+  OK  prompt= 23 tok | ref  48 / ours  48 tokens, 48 leading match | vs fp16 model: 8/39 leading | sched=atomic grid=148
+      ours: "The sky appears blue because of the way light interacts with the Earth's atmosphere, where shorter wavelengths"
+  OK  prompt= 19 tok | ref  12 / ours  12 tokens, 12 leading match | vs fp16 model: 1/14 leading | sched=atomic grid=148
+      ours: 'GPU—**power** in the **data** world.'
+  OK  prompt=371 tok | ref  22 / ours  22 tokens, 22 leading match | vs fp16 model: 0/22 leading | sched=atomic grid=148
+      ours: 'GPU memory architecture features shared memory (fast and large) and L2 cache (between shared and global memory'
+  latency: 140.9 ms for 23-token prompt + 128 new tokens (940 us per token step, single launch)
+=== backend=cuda scheduler=static weights=fp8
+  OK  prompt= 19 tok | ref   9 / ours   9 tokens, 9 leading match | vs fp16 model: 9/9 leading | sched=static grid=148
+      ours: 'The capital of France is **Paris**.'
+  OK  prompt= 23 tok | ref  48 / ours  48 tokens, 48 leading match | vs fp16 model: 8/39 leading | sched=static grid=148
+      ours: "The sky appears blue because of the way light interacts with the Earth's atmosphere, where shorter wavelengths"
+  OK  prompt= 19 tok | ref  12 / ours  12 tokens, 12 leading match | vs fp16 model: 1/14 leading | sched=static grid=148
+      ours: 'GPU—**power** in the **data** world.'
+  OK  prompt=371 tok | ref  22 / ours  22 tokens, 22 leading match | vs fp16 model: 0/22 leading | sched=static grid=148
+      ours: 'GPU memory architecture features shared memory (fast and large) and L2 cache (between shared and global memory'
+  latency: 90.1 ms for 23-token prompt + 128 new tokens (601 us per token step, single launch)
+=== backend=cuda scheduler=clc weights=fp8
+  OK  prompt= 19 tok | ref   9 / ours   9 tokens, 9 leading match | vs fp16 model: 9/9 leading | sched=clc grid=1121424
+      ours: 'The capital of France is **Paris**.'
+  OK  prompt= 23 tok | ref  48 / ours  48 tokens, 48 leading match | vs fp16 model: 8/39 leading | sched=clc grid=1185936
+      ours: "The sky appears blue because of the way light interacts with the Earth's atmosphere, where shorter wavelengths"
+  OK  prompt= 19 tok | ref  12 / ours  12 tokens, 12 leading match | vs fp16 model: 1/14 leading | sched=clc grid=1121424
+      ours: 'GPU—**power** in the **data** world.'
+  OK  prompt=371 tok | ref  22 / ours  22 tokens, 22 leading match | vs fp16 model: 0/22 leading | sched=clc grid=6798480
+      ours: 'GPU memory architecture features shared memory (fast and large) and L2 cache (between shared and global memory'
+  latency: 142.8 ms for 23-token prompt + 128 new tokens (952 us per token step, single launch)
+
+##### weights=fp4  [NVIDIA B200] stage=9216 B x 16, claim-ahead 1, smem 164096 B
+=== backend=cuda scheduler=atomic weights=fp4
+  OK  prompt= 19 tok | ref   7 / ours   7 tokens, 7 leading match | vs fp16 model: 5/9 leading | sched=atomic grid=148
+      ours: 'The capital of France is Paris.'
+  OK  prompt= 23 tok | ref  48 / ours  48 tokens, 48 leading match | vs fp16 model: 16/39 leading | sched=atomic grid=148
+      ours: "The sky appears blue because of the way sunlight interacts with the Earth's atmosphere, creating a blue hue th"
+  OK  prompt= 19 tok | ref  48 / ours  48 tokens, 48 leading match | vs fp16 model: 1/14 leading | sched=atomic grid=148
+      ours: 'GPU (Graphics Processing Unit) is a powerful computing component that enables powerful processing of graphics '
+  OK  prompt=371 tok | ref  22 / ours  22 tokens, 22 leading match | vs fp16 model: 2/22 leading | sched=atomic grid=148
+      ours: 'The notes all mention that shared memory is fast, global memory is large, and L2 sits between them.'
+  latency: 144.6 ms for 23-token prompt + 128 new tokens (964 us per token step, single launch)
+=== backend=cuda scheduler=static weights=fp4
+  OK  prompt= 19 tok | ref   7 / ours   7 tokens, 7 leading match | vs fp16 model: 5/9 leading | sched=static grid=148
+      ours: 'The capital of France is Paris.'
+  OK  prompt= 23 tok | ref  48 / ours  48 tokens, 48 leading match | vs fp16 model: 16/39 leading | sched=static grid=148
+      ours: "The sky appears blue because of the way sunlight interacts with the Earth's atmosphere, creating a blue hue th"
+  OK  prompt= 19 tok | ref  48 / ours  48 tokens, 48 leading match | vs fp16 model: 1/14 leading | sched=static grid=148
+      ours: 'GPU (Graphics Processing Unit) is a powerful computing component that enables powerful processing of graphics '
+  OK  prompt=371 tok | ref  22 / ours  22 tokens, 22 leading match | vs fp16 model: 2/22 leading | sched=static grid=148
+      ours: 'The notes all mention that shared memory is fast, global memory is large, and L2 sits between them.'
+  latency: 92.2 ms for 23-token prompt + 128 new tokens (615 us per token step, single launch)
+=== backend=cuda scheduler=clc weights=fp4
+  OK  prompt= 19 tok | ref   7 / ours   7 tokens, 7 leading match | vs fp16 model: 5/9 leading | sched=clc grid=1121424
+      ours: 'The capital of France is Paris.'
+  OK  prompt= 23 tok | ref  48 / ours  48 tokens, 48 leading match | vs fp16 model: 16/39 leading | sched=clc grid=1185936
+      ours: "The sky appears blue because of the way sunlight interacts with the Earth's atmosphere, creating a blue hue th"
+  OK  prompt= 19 tok | ref  48 / ours  48 tokens, 48 leading match | vs fp16 model: 1/14 leading | sched=clc grid=1121424
+      ours: 'GPU (Graphics Processing Unit) is a powerful computing component that enables powerful processing of graphics '
+  OK  prompt=371 tok | ref  22 / ours  22 tokens, 22 leading match | vs fp16 model: 2/22 leading | sched=clc grid=6798480
+      ours: 'The notes all mention that shared memory is fast, global memory is large, and L2 sits between them.'
+  latency: 148.0 ms for 23-token prompt + 128 new tokens (987 us per token step, single launch)
+
+PASS
+
+######## 10:37:59 test_dps CuTeDSL
+
+##### weights=fp16  [NVIDIA B200] stage=32768 B x 6, claim-ahead 1, smem ? B
+=== backend=cutedsl scheduler=atomic weights=fp16
+Timeout (0:01:00)!
+Thread 0x00007fd454f416c0 (most recent call first):
+  File "/venv/main/lib/python3.12/threading.py", line 359 in wait
+  File "/venv/main/lib/python3.12/threading.py", line 655 in wait
+  File "/venv/main/lib/python3.12/site-packages/tqdm/_monitor.py", line 69 in run
+  File "/venv/main/lib/python3.12/threading.py", line 1075 in _bootstrap_inner
+  File "/venv/main/lib/python3.12/threading.py", line 1032 in _bootstrap
+
+Thread 0x00007fda0fa96740 (most recent call first):
+  File "/workspace/Qwen3-0.6B-megakernel-RTX-5090/megakernel_dynamic/qwen_dps.py", line 294 in generate_ids
+  File "/workspace/Qwen3-0.6B-megakernel-RTX-5090/megakernel_dynamic/test_dps.py", line 135 in run_format
+  File "/workspace/Qwen3-0.6B-megakernel-RTX-5090/megakernel_dynamic/test_dps.py", line 188 in main
+  File "/workspace/Qwen3-0.6B-megakernel-RTX-5090/megakernel_dynamic/test_dps.py", line 194 in <module>
+
+######## 10:39:09 CuTeDSL failed or timed out: hang probe
+fp16 atomic: compiled + launched in 1.8 s; prompt 19 tokens -> 18 prefill steps, 679704 tiles in the launch
+
+read 1 at +3.8 s
+  ticket           892  next ticket would be: step 0, layer 0, down tile 60
+  qkv[0]            32  = next: step 0 layer 1, 0/32 done
+  qkv[1]            32  = next: step 0 layer 1, 0/32 done
+  qkv[2]            32  = next: step 0 layer 1, 0/32 done
+  qkv[3]            32  = next: step 0 layer 1, 0/32 done
+  qkv[4]            32  = next: step 0 layer 1, 0/32 done
+  qkv[5]            32  = next: step 0 layer 1, 0/32 done
+  qkv[6]            32  = next: step 0 layer 1, 0/32 done
+  qkv[7]            32  = next: step 0 layer 1, 0/32 done
+  asplit[0]          8  = next: step 0 layer 1, 0/8 done
+  asplit[1]          8  = next: step 0 layer 1, 0/8 done
+  asplit[2]          8  = next: step 0 layer 1, 0/8 done
+  asplit[3]          8  = next: step 0 layer 1, 0/8 done
+  asplit[4]          8  = next: step 0 layer 1, 0/8 done
+  asplit[5]          8  = next: step 0 layer 1, 0/8 done
+  asplit[6]          8  = next: step 0 layer 1, 0/8 done
+  asplit[7]          8  = next: step 0 layer 1, 0/8 done
+  attn               8  = next: step 0 layer 1, 0/8 done
+  oproj            128  = next: step 0 layer 1, 0/128 done
+  gateup           148  = next: step 0 layer 0, 148/384 done
+  down               0  = next: step 0 layer 0, 0/256 done
+  lm_arrive          0  = 0 decode steps + 0/2374
+  lm_done            0  = 0 decode steps + 0/1
+  eos                0
+
+read 2 at +5.8 s  (no change since last read)
+  ticket           892  next ticket would be: step 0, layer 0, down tile 60
+  qkv[0]            32  = next: step 0 layer 1, 0/32 done
+  qkv[1]            32  = next: step 0 layer 1, 0/32 done
+  qkv[2]            32  = next: step 0 layer 1, 0/32 done
+  qkv[3]            32  = next: step 0 layer 1, 0/32 done
+  qkv[4]            32  = next: step 0 layer 1, 0/32 done
+  qkv[5]            32  = next: step 0 layer 1, 0/32 done
+  qkv[6]            32  = next: step 0 layer 1, 0/32 done
+  qkv[7]            32  = next: step 0 layer 1, 0/32 done
+  asplit[0]          8  = next: step 0 layer 1, 0/8 done
+  asplit[1]          8  = next: step 0 layer 1, 0/8 done
+  asplit[2]          8  = next: step 0 layer 1, 0/8 done
+  asplit[3]          8  = next: step 0 layer 1, 0/8 done
+  asplit[4]          8  = next: step 0 layer 1, 0/8 done
+  asplit[5]          8  = next: step 0 layer 1, 0/8 done
+  asplit[6]          8  = next: step 0 layer 1, 0/8 done
+  asplit[7]          8  = next: step 0 layer 1, 0/8 done
+  attn               8  = next: step 0 layer 1, 0/8 done
+  oproj            128  = next: step 0 layer 1, 0/128 done
+  gateup           148  = next: step 0 layer 0, 148/384 done
+  down               0  = next: step 0 layer 0, 0/256 done
+  lm_arrive          0  = 0 decode steps + 0/2374
+  lm_done            0  = 0 decode steps + 0/1
+  eos                0
+
+read 3 at +7.8 s  (no change since last read)
+  ticket           892  next ticket would be: step 0, layer 0, down tile 60
+  qkv[0]            32  = next: step 0 layer 1, 0/32 done
+  qkv[1]            32  = next: step 0 layer 1, 0/32 done
+  qkv[2]            32  = next: step 0 layer 1, 0/32 done
+  qkv[3]            32  = next: step 0 layer 1, 0/32 done
+  qkv[4]            32  = next: step 0 layer 1, 0/32 done
+  qkv[5]            32  = next: step 0 layer 1, 0/32 done
+  qkv[6]            32  = next: step 0 layer 1, 0/32 done
+  qkv[7]            32  = next: step 0 layer 1, 0/32 done
+  asplit[0]          8  = next: step 0 layer 1, 0/8 done
+  asplit[1]          8  = next: step 0 layer 1, 0/8 done
+  asplit[2]          8  = next: step 0 layer 1, 0/8 done
+  asplit[3]          8  = next: step 0 layer 1, 0/8 done
+  asplit[4]          8  = next: step 0 layer 1, 0/8 done
+  asplit[5]          8  = next: step 0 layer 1, 0/8 done
+  asplit[6]          8  = next: step 0 layer 1, 0/8 done
+  asplit[7]          8  = next: step 0 layer 1, 0/8 done
+  attn               8  = next: step 0 layer 1, 0/8 done
+  oproj            128  = next: step 0 layer 1, 0/128 done
+  gateup           148  = next: step 0 layer 0, 148/384 done
+  down               0  = next: step 0 layer 0, 0/256 done
+  lm_arrive          0  = 0 decode steps + 0/2374
+  lm_done            0  = 0 decode steps + 0/1
+  eos                0
+
+######## 10:39:23 traces
+
+##### fp16 atomic  [NVIDIA B200]  138520 tiles over 8 decode steps, 148 SMs, globaltimer step ~32 ns
+token step: 884.8 us traced | 879.6 us untraced (qwen_dps_C)
+
+per tile (mean us)  tiles/step   queue  dep-wait     prep  w-wait   other    busy
+  QKV                    3584    5.46    3.84     0.40    0.12    1.82    6.18
+  ATTN                   1792    5.86    3.42     0.00    0.00    1.55    4.97
+  O-proj                 3584    5.99    8.78     0.22    0.13    1.46   10.59
+  gate/up                3584    9.59    5.26     0.39    0.22    2.06    7.91
+  down                   3584    6.77    4.14     0.43    0.08    1.52    6.18
+  LM head                1187    6.61    0.64     0.06    0.32    6.09    7.11
+  queue = ticket waiting in the CTA's claim-ahead ring; dep-wait = waiting for the counters it reads;
+  other = dot products, reductions, barriers and the done-signal
+
+critical path    links/step  us/step   segment  handoff   spread  (mean us per link)
+  QKV                 28     163.8     5.85     0.22     5.62
+  ATTN                28     215.7     7.70    -2.77    10.47
+  O-proj              28     131.9     4.71     0.20     4.51
+  gate/up             28     166.7     5.95     0.25     5.71
+  down                28     145.3     5.19     0.23     4.96
+  LM head              1      61.5    61.51     0.20    61.31
+  sum                        884.8
+
+balance (mean per phase)  tiles  even share  busiest SM  SMs used  phase duration us
+  QKV                         128        0.86        1.94       116               5.63
+  ATTN                         64        0.43        1.86        55              10.40
+  O-proj                      128        0.86        2.00       107               4.52
+  gate/up                     128        0.86        2.00       108               5.71
+  down                        128        0.86        2.00       111               4.96
+
+SM time: 32% in tiles, 66% waiting on dependencies, 2% between tiles (mean gap 0.16 us); 117 tiles per SM per step
+saved megakernel_dynamic/results/traces_v2/fp16_atomic.npz
+
+##### fp16 static  [NVIDIA B200]  138520 tiles over 8 decode steps, 148 SMs, globaltimer step ~32 ns
+token step: 577.1 us traced | 570.3 us untraced (qwen_dps_C)
+
+per tile (mean us)  tiles/step   queue  dep-wait     prep  w-wait   other    busy
+  QKV                    3584    3.35    1.40     0.45    0.12    1.75    3.73
+  ATTN                   1792    3.76    1.57     0.00    0.00    2.04    3.61
+  O-proj                 3584    3.22    5.78     0.23    0.13    1.39    7.54
+  gate/up                3584    6.88    1.42     0.50    0.22    2.16    4.29
+  down                   3584    4.36    1.19     0.60    0.08    1.59    3.46
+  LM head                1187    6.50    0.32     0.05    0.32    6.08    6.78
+  queue = ticket waiting in the CTA's claim-ahead ring; dep-wait = waiting for the counters it reads;
+  other = dot products, reductions, barriers and the done-signal
+
+critical path    links/step  us/step   segment  handoff   spread  (mean us per link)
+  QKV                 28      82.3     2.94     0.20     2.74
+  ATTN                28     174.5     6.23     0.06     6.17
+  O-proj              28      67.4     2.41     0.21     2.20
+  gate/up             28     102.0     3.64     0.24     3.40
+  down                28      87.7     3.13     0.23     2.91
+  LM head              1      63.1    63.15     0.18    62.97
+  sum                        577.1
+
+balance (mean per phase)  tiles  even share  busiest SM  SMs used  phase duration us
+  QKV                         128        0.86        1.00       128               2.74
+  ATTN                         64        0.43        1.00        64               6.16
+  O-proj                      128        0.86        1.00       128               2.20
+  gate/up                     128        0.86        1.00       128               3.40
+  down                        128        0.86        1.00       128               2.91
+
+SM time: 52% in tiles, 45% waiting on dependencies, 3% between tiles (mean gap 0.16 us); 117 tiles per SM per step
+saved megakernel_dynamic/results/traces_v2/fp16_static.npz
+
+##### fp16 clc  [NVIDIA B200]  138520 tiles over 8 decode steps, 148 SMs, globaltimer step ~32 ns
+token step: 903.7 us traced | 832.7 us untraced (qwen_dps_C)
+
+per tile (mean us)  tiles/step   queue  dep-wait     prep  w-wait   other    busy
+  QKV                    3584    5.30    3.89     0.40    0.12    1.83    6.25
+  ATTN                   1792    5.74    3.52     0.00    0.00    1.51    5.03
+  O-proj                 3584    5.81    9.56     0.22    0.13    1.37   11.28
+  gate/up                3584   10.19    5.09     0.40    0.22    2.06    7.76
+  down                   3584    6.45    4.33     0.44    0.08    1.50    6.35
+  LM head                1187    6.40    0.67     0.06    0.32    6.08    7.13
+  queue = ticket waiting in the CTA's claim-ahead ring; dep-wait = waiting for the counters it reads;
+  other = dot products, reductions, barriers and the done-signal
+
+critical path    links/step  us/step   segment  handoff   spread  (mean us per link)
+  QKV                 28     169.1     6.04     0.23     5.81
+  ATTN                28     233.5     8.34    -3.01    11.34
+  O-proj              28     124.1     4.43     0.20     4.23
+  gate/up             28     171.2     6.11     0.25     5.86
+  down                28     144.4     5.16     0.25     4.91
+  LM head              1      61.5    61.54     0.19    61.35
+  sum                        903.7
+
+balance (mean per phase)  tiles  even share  busiest SM  SMs used  phase duration us
+  QKV                         128        0.86        1.96       115               5.81
+  ATTN                         64        0.43        1.91        54              11.32
+  O-proj                      128        0.86        2.00       107               4.24
+  gate/up                     128        0.86        2.00       108               5.85
+  down                        128        0.86        2.00       111               4.91
+
+SM time: 31% in tiles, 67% waiting on dependencies, 2% between tiles (mean gap 0.16 us); 117 tiles per SM per step
+saved megakernel_dynamic/results/traces_v2/fp16_clc.npz
+
+##### fp8 atomic  [NVIDIA B200]  138520 tiles over 8 decode steps, 148 SMs, globaltimer step ~32 ns
+token step: 943.6 us traced | 919.9 us untraced (qwen_dps_C)
+
+per tile (mean us)  tiles/step   queue  dep-wait     prep  w-wait   other    busy
+  QKV                    3584    6.33    3.92     0.39    0.18    2.13    6.63
+  ATTN                   1792    6.33    3.74     0.00    0.00    1.53    5.27
+  O-proj                 3584    6.37    9.01     0.16    0.24    1.54   10.95
+  gate/up                3584    9.98    5.42     0.43    0.15    2.57    8.57
+  down                   3584    7.31    4.70     0.45    0.23    1.66    7.03
+  LM head                1187    6.65    0.72     0.06    0.38    6.25    7.40
+  queue = ticket waiting in the CTA's claim-ahead ring; dep-wait = waiting for the counters it reads;
+  other = dot products, reductions, barriers and the done-signal
+
+critical path    links/step  us/step   segment  handoff   spread  (mean us per link)
+  QKV                 28     180.3     6.44     0.27     6.17
+  ATTN                28     215.1     7.68    -2.94    10.62
+  O-proj              28     137.5     4.91     0.20     4.70
+  gate/up             28     192.4     6.87     0.24     6.63
+  down                28     154.1     5.50     0.26     5.25
+  LM head              1      64.3    64.33     0.19    64.14
+  sum                        943.6
+
+balance (mean per phase)  tiles  even share  busiest SM  SMs used  phase duration us
+  QKV                         128        0.86        1.96       115               6.17
+  ATTN                         64        0.43        1.91        53              10.67
+  O-proj                      128        0.86        2.00       105               4.70
+  gate/up                     128        0.86        2.00       107               6.63
+  down                        128        0.86        2.00       112               5.24
+
+SM time: 34% in tiles, 64% waiting on dependencies, 2% between tiles (mean gap 0.16 us); 117 tiles per SM per step
+saved megakernel_dynamic/results/traces_v2/fp8_atomic.npz
+
+##### fp8 static  [NVIDIA B200]  138520 tiles over 8 decode steps, 148 SMs, globaltimer step ~32 ns
+token step: 592.3 us traced | 581.8 us untraced (qwen_dps_C)
+
+per tile (mean us)  tiles/step   queue  dep-wait     prep  w-wait   other    busy
+  QKV                    3584    3.58    1.30     0.45    0.18    2.07    4.00
+  ATTN                   1792    4.02    1.61     0.00    0.00    1.79    3.40
+  O-proj                 3584    3.36    5.42     0.24    0.25    1.50    7.40
+  gate/up                3584    6.69    1.50     0.53    0.15    2.53    4.70
+  down                   3584    4.72    1.14     0.55    0.23    1.65    3.58
+  LM head                1187    6.35    0.30     0.06    0.37    6.26    6.99
+  queue = ticket waiting in the CTA's claim-ahead ring; dep-wait = waiting for the counters it reads;
+  other = dot products, reductions, barriers and the done-signal
+
+critical path    links/step  us/step   segment  handoff   spread  (mean us per link)
+  QKV                 28      92.7     3.31     0.22     3.09
+  ATTN                28     162.3     5.80     0.10     5.70
+  O-proj              28      75.3     2.69     0.21     2.48
+  gate/up             28     108.7     3.88     0.23     3.65
+  down                28      86.1     3.08     0.21     2.87
+  LM head              1      67.2    67.22     0.27    66.95
+  sum                        592.3
+
+balance (mean per phase)  tiles  even share  busiest SM  SMs used  phase duration us
+  QKV                         128        0.86        1.00       128               3.09
+  ATTN                         64        0.43        1.00        64               5.69
+  O-proj                      128        0.86        1.00       128               2.48
+  gate/up                     128        0.86        1.00       128               3.65
+  down                        128        0.86        1.00       128               2.87
+
+SM time: 55% in tiles, 42% waiting on dependencies, 3% between tiles (mean gap 0.16 us); 117 tiles per SM per step
+saved megakernel_dynamic/results/traces_v2/fp8_static.npz
+
+##### fp8 clc  [NVIDIA B200]  138520 tiles over 8 decode steps, 148 SMs, globaltimer step ~32 ns
+token step: 983.2 us traced | 958.0 us untraced (qwen_dps_C)
+
+per tile (mean us)  tiles/step   queue  dep-wait     prep  w-wait   other    busy
+  QKV                    3584    6.08    4.16     0.39    0.18    2.13    6.87
+  ATTN                   1792    6.34    3.91     0.00    0.00    1.51    5.43
+  O-proj                 3584    6.42    9.87     0.16    0.24    1.52   11.79
+  gate/up                3584   10.80    5.55     0.42    0.15    2.57    8.68
+  down                   3584    7.26    4.88     0.45    0.23    1.67    7.23
+  LM head                1187    6.50    0.73     0.06    0.37    6.28    7.44
+  queue = ticket waiting in the CTA's claim-ahead ring; dep-wait = waiting for the counters it reads;
+  other = dot products, reductions, barriers and the done-signal
+
+critical path    links/step  us/step   segment  handoff   spread  (mean us per link)
+  QKV                 28     180.3     6.44     0.27     6.17
+  ATTN                28     248.9     8.89    -2.95    11.84
+  O-proj              28     139.0     4.96     0.20     4.76
+  gate/up             28     193.6     6.92     0.20     6.71
+  down                28     156.6     5.59     0.23     5.36
+  LM head              1      64.7    64.69     0.17    64.51
+  sum                        983.2
+
+balance (mean per phase)  tiles  even share  busiest SM  SMs used  phase duration us
+  QKV                         128        0.86        1.96       115               6.17
+  ATTN                         64        0.43        1.94        53              11.76
+  O-proj                      128        0.86        2.00       105               4.76
+  gate/up                     128        0.86        2.00       106               6.71
+  down                        128        0.86        2.00       110               5.36
+
+SM time: 32% in tiles, 66% waiting on dependencies, 2% between tiles (mean gap 0.16 us); 117 tiles per SM per step
+saved megakernel_dynamic/results/traces_v2/fp8_clc.npz
+
+##### fp4 atomic  [NVIDIA B200]  138520 tiles over 8 decode steps, 148 SMs, globaltimer step ~32 ns
+token step: 973.2 us traced | 938.1 us untraced (qwen_dps_C)
+
+per tile (mean us)  tiles/step   queue  dep-wait     prep  w-wait   other    busy
+  QKV                    3584    6.77    4.10     0.39    0.19    2.22    6.90
+  ATTN                   1792    6.67    3.73     0.00    0.00    1.52    5.25
+  O-proj                 3584    6.41    8.99     0.17    0.25    1.58   10.99
+  gate/up                3584   10.00    5.39     0.44    0.16    2.79    8.78
+  down                   3584    7.60    4.96     0.44    0.07    1.96    7.43
+  LM head                1187    7.31    0.75     0.06    0.37    6.93    8.11
+  queue = ticket waiting in the CTA's claim-ahead ring; dep-wait = waiting for the counters it reads;
+  other = dot products, reductions, barriers and the done-signal
+
+critical path    links/step  us/step   segment  handoff   spread  (mean us per link)
+  QKV                 28     180.4     6.44     0.27     6.18
+  ATTN                28     214.9     7.68    -2.86    10.53
+  O-proj              28     141.6     5.06     0.20     4.86
+  gate/up             28     204.6     7.31     0.22     7.09
+  down                28     160.5     5.73     0.24     5.50
+  LM head              1      71.1    71.14     0.23    70.91
+  sum                        973.2
+
+balance (mean per phase)  tiles  even share  busiest SM  SMs used  phase duration us
+  QKV                         128        0.86        1.96       115               6.17
+  ATTN                         64        0.43        1.88        53              10.52
+  O-proj                      128        0.86        2.00       107               4.86
+  gate/up                     128        0.86        2.00       109               7.09
+  down                        128        0.86        2.00       112               5.49
+
+SM time: 34% in tiles, 64% waiting on dependencies, 2% between tiles (mean gap 0.16 us); 117 tiles per SM per step
+saved megakernel_dynamic/results/traces_v2/fp4_atomic.npz
+
+##### fp4 static  [NVIDIA B200]  138520 tiles over 8 decode steps, 148 SMs, globaltimer step ~32 ns
+token step: 610.7 us traced | 595.5 us untraced (qwen_dps_C)
+
+per tile (mean us)  tiles/step   queue  dep-wait     prep  w-wait   other    busy
+  QKV                    3584    3.75    1.33     0.44    0.19    2.18    4.14
+  ATTN                   1792    4.19    1.64     0.00    0.00    1.73    3.37
+  O-proj                 3584    3.43    5.37     0.24    0.25    1.55    7.41
+  gate/up                3584    6.67    1.51     0.52    0.16    2.75    4.94
+  down                   3584    4.93    1.17     0.55    0.07    1.96    3.74
+  LM head                1187    6.91    0.30     0.06    0.37    6.91    7.63
+  queue = ticket waiting in the CTA's claim-ahead ring; dep-wait = waiting for the counters it reads;
+  other = dot products, reductions, barriers and the done-signal
+
+critical path    links/step  us/step   segment  handoff   spread  (mean us per link)
+  QKV                 28      96.3     3.44     0.23     3.21
+  ATTN                28     160.3     5.73     0.09     5.63
+  O-proj              28      76.7     2.74     0.21     2.53
+  gate/up             28     114.4     4.09     0.23     3.85
+  down                28      89.9     3.21     0.22     2.99
+  LM head              1      73.0    73.01     0.20    72.81
+  sum                        610.7
+
+balance (mean per phase)  tiles  even share  busiest SM  SMs used  phase duration us
+  QKV                         128        0.86        1.00       128               3.21
+  ATTN                         64        0.43        1.00        64               5.62
+  O-proj                      128        0.86        1.00       128               2.53
+  gate/up                     128        0.86        1.00       128               3.86
+  down                        128        0.86        1.00       128               2.99
+
+SM time: 56% in tiles, 41% waiting on dependencies, 3% between tiles (mean gap 0.16 us); 117 tiles per SM per step
+saved megakernel_dynamic/results/traces_v2/fp4_static.npz
+
+##### fp4 clc  [NVIDIA B200]  138520 tiles over 8 decode steps, 148 SMs, globaltimer step ~32 ns
+token step: 995.0 us traced | 956.4 us untraced (qwen_dps_C)
+
+per tile (mean us)  tiles/step   queue  dep-wait     prep  w-wait   other    busy
+  QKV                    3584    6.53    4.16     0.39    0.18    2.24    6.97
+  ATTN                   1792    6.45    3.97     0.00    0.00    1.50    5.47
+  O-proj                 3584    6.38    9.36     0.17    0.25    1.60   11.37
+  gate/up                3584   10.33    5.51     0.44    0.16    2.79    8.89
+  down                   3584    7.50    5.03     0.45    0.07    1.97    7.52
+  LM head                1187    7.12    0.75     0.06    0.37    6.92    8.10
+  queue = ticket waiting in the CTA's claim-ahead ring; dep-wait = waiting for the counters it reads;
+  other = dot products, reductions, barriers and the done-signal
+
+critical path    links/step  us/step   segment  handoff   spread  (mean us per link)
+  QKV                 28     184.8     6.60     0.25     6.35
+  ATTN                28     229.9     8.21    -3.00    11.21
+  O-proj              28     142.8     5.10     0.20     4.90
+  gate/up             28     206.1     7.36     0.23     7.13
+  down                28     160.5     5.73     0.24     5.49
+  LM head              1      71.0    71.00     0.22    70.78
+  sum                        995.0
+
+balance (mean per phase)  tiles  even share  busiest SM  SMs used  phase duration us
+  QKV                         128        0.86        1.96       115               6.36
+  ATTN                         64        0.43        1.94        53              11.09
+  O-proj                      128        0.86        2.00       105               4.90
+  gate/up                     128        0.86        2.00       107               7.13
+  down                        128        0.86        2.00       111               5.48
+
+SM time: 34% in tiles, 64% waiting on dependencies, 2% between tiles (mean gap 0.16 us); 117 tiles per SM per step
+saved megakernel_dynamic/results/traces_v2/fp4_clc.npz
+
+######## 10:39:38 wait for vLLM install
+VLLM_INSTALL_DONE
+W1103 10:39:47.639000 5199 torch/_opaque_base.py:6] torch._opaque_base is deprecated, use torch._custom_class_base instead
+W1103 10:39:47.639000 5199 torch/_library/opaque_object.py:288] register_opaque_type is deprecated, use register_custom_class instead
+W1103 10:39:47.640000 5199 torch/_library/opaque_object.py:211] typ='value' is deprecated, use typ='constant' instead
+0.33.0
+
+######## 10:39:56 serving benchmark vs vLLM
+date: 2026-11-03T10:39:56+00:00
+gpu: NVIDIA B200
+driver_version, memory.total [MiB]
+580.126.09, 183359 MiB
+megakernel python: 2.14.1+cu130 13.0
+vllm: 0.33.0
+MAX_TOKENS=32 NUM_REQUESTS=100 WARMUP=3 CONCURRENCY=1
+
+[bench] ===== megakernel: weights fp16, scheduler auto =====
+[warning] .env not found, using defaults.
+=================================================================
+Benchmark of Steps 1 and 2
+=================================================================
+  Server           : http://localhost:8000
+  Model            : Qwen/Qwen3-0.6B
+  Client           : openai SDK  (vLLM-compatible)
+  Server           : Megakernel (fp16, auto)
+  dtype            : fp16
+  Requests         : 100
+  Concurrency      : 1  (sequential)
+  Max tokens/reply : 32
+  Temperature      : 0.0  (greedy)
+  Warm-up requests : 3  (not timed)
+  Log file         : megakernel_dynamic/results/serving_v2/dps_fp16_auto.json
+=================================================================
+
+[client] waiting for server at http://localhost:8000ready 
+
+  Req  Latency (s)  In tok  Out tok  Question
+  ---------------------------------------------------------------
+    1        0.022s      19        8  What is the capital of Norway?
+    2        0.044s      22       32  Who was the third German king of Ba
+    3        0.045s      23       32  Explain the theory of relativity in
+    4        0.044s      22       32  What is the speed of light in a vac
+    5        0.039s      20       28  Who wrote the novel Moby Dick?
+    6        0.029s      20       15  What year did World War II end?
+    7        0.027s      20       13  What is the chemical formula for wa
+    8        0.041s      18       32  Who painted the Mona Lisa?
+    9        0.044s      22       32  What is the largest planet in the s
+   10        0.043s      21       32  Who developed the theory of general
+   11        0.035s      22       21  What is the boiling point of water 
+   12        0.025s      19       12  What is the capital of Japan?
+   13        0.045s      23       32  Who was the first person to walk on
+   14        0.045s      23       32  What is the square root of 144?
+   15        0.040s      17       32  Who invented the telephone?
+   16        0.043s      21       32  What is the longest river in the wo
+   17        0.025s      19       11  What is the capital of Australia?
+   18        0.041s      18       32  Who wrote Romeo and Juliet?
+   19        0.043s      21       32  What is the hardest natural substan
+   20        0.043s      21       32  What is the smallest country in the
+   21        0.044s      22       32  Who was the first President of the 
+   22        0.028s      19       15  What is the currency of Japan?
+   23        0.044s      21       32  What is the tallest mountain in the
+   24        0.041s      18       32  Who discovered penicillin?
+   25        0.043s      20       32  What is the atomic number of carbon
+   26        0.023s      19        9  What language is spoken in Brazil?
+   27        0.022s      19        8  What is the capital of Canada?
+   28        0.041s      18       32  Who invented the light bulb?
+   29        0.044s      22       32  What is the distance from Earth to 
+   30        0.043s      20       32  Who composed Beethoven's Fifth Symp
+   31        0.024s      19       10  What is the capital of Germany?
+   32        0.043s      20       32  What is the largest ocean on Earth?
+   33        0.042s      19       32  Who was Napoleon Bonaparte?
+   34        0.043s      20       32  What is the powerhouse of the cell?
+   35        0.024s      19       10  What is the capital of France?
+   36        0.043s      20       32  Who wrote 1984?
+   37        0.025s      20       11  What is the chemical symbol for gol
+   38        0.043s      20       32  How many continents are there on Ea
+   39        0.045s      23       32  Who was the first woman to win a No
+   40        0.023s      19        9  What is the capital of Brazil?
+   41        0.040s      17       32  What is photosynthesis?
+   42        0.040s      17       32  Who invented the internet?
+   43        0.043s      20       32  What is the largest continent by ar
+   44        0.025s      19       11  What is the capital of China?
+   45        0.040s      17       32  Who was Julius Caesar?
+   46        0.043s      20       32  What is the Pythagorean theorem?
+   47        0.024s      19       11  What is the capital of India?
+   48        0.042s      19       32  Who wrote the Harry Potter series?
+   49        0.030s      22       15  What is the melting point of iron i
+   50        0.022s      19        8  What is the capital of Russia?
+   51        0.039s      16       32  Who discovered gravity?
+   52        0.022s      19        8  What is the capital of Italy?
+   53        0.044s      22       32  What is the primary gas in Earth's 
+   54        0.043s      20       32  Who built the Great Wall of China?
+   55        0.022s      19        8  What is the capital of Spain?
+   56        0.041s      22       28  How many bones are in the adult hum
+   57        0.041s      18       32  Who was Cleopatra?
+   58        0.025s      19       11  What is the capital of Egypt?
+   59        0.046s      24       32  What is the speed of sound in air a
+   60        0.041s      18       32  Who invented the steam engine?
+   61        0.025s      19       11  What is the capital of Mexico?
+   62        0.043s      21       32  What is DNA and what does it do?
+   63        0.040s      17       32  Who was Albert Einstein?
+   64        0.026s      20       12  What is the capital of South Korea?
+   65        0.043s      21       32  What is the largest desert in the w
+   66        0.042s      19       32  Who wrote the Iliad?
+   67        0.026s      19       13  What is the capital of Argentina?
+   68        0.046s      24       32  What is the function of the kidney 
+   69        0.040s      17       32  Who was Isaac Newton?
+   70        0.025s      19       11  What is the capital of Nigeria?
+   71        0.044s      22       32  What is the cruising speed of a com
+   72        0.041s      18       32  Who invented the printing press?
+   73        0.025s      19       12  What is the capital of Turkey?
+   74        0.042s      19       32  What is the theory of evolution?
+   75        0.041s      18       32  Who was Marie Curie?
+   76        0.027s      20       13  What is the capital of Saudi Arabia
+   77        0.025s      20       11  What is the chemical symbol for sil
+   78        0.042s      19       32  Who was Genghis Khan?
+   79        0.024s      19       11  What is the capital of Indonesia?
+   80        0.043s      20       32  What is the function of the heart?
+   81        0.041s      18       32  Who was Leonardo da Vinci?
+   82        0.022s      19        8  What is the capital of Pakistan?
+   83        0.044s      21       32  What is the largest mammal on Earth
+   84        0.042s      19       32  Who wrote Don Quixote?
+   85        0.026s      20       12  What is the capital of the Netherla
+   86        0.044s      21       32  What is the rotational speed of the
+   87        0.040s      17       32  Who was Socrates?
+   88        0.025s      19       11  What is the capital of Sweden?
+   89        0.025s      20       11  What is the chemical symbol for iro
+   90        0.040s      17       32  Who was Nikola Tesla?
+   91        0.024s      19       11  What is the capital of Poland?
+   92        0.030s      22       15  What is the largest organ in the hu
+   93        0.040s      17       32  Who invented the airplane?
+   94        0.025s      19       11  What is the capital of Ukraine?
+   95        0.042s      19       32  What is the Big Bang theory?
+   96        0.040s      17       32  Who was Charles Darwin?
+   97        0.024s      19       11  What is the capital of Greece?
+   98        0.025s      20       11  What is the chemical symbol for sod
+   99        0.040s      16       32  Who was Aristotle?
+  100        0.022s      19        8  What is the capital of Portugal?
+
+=================================================================
+LATENCY SUMMARY  Megakernel (fp16, auto)
+=================================================================
+  Requests sent      : 100
+  Successful         : 100
+  Failed             : 0
+  Average latency    : 0.036 s   <- primary metric
+  Median latency     : 0.040 s
+  Std deviation      : 0.009 s
+  Min latency        : 0.022 s
+  Max latency        : 0.046 s
+  P90 latency        : 0.044 s
+  Throughput         : 27.95 req/s
+  Output tokens      : 2403  (24.0 per request)
+  Tokens/s           : 635.8   (mean of output tokens / latency per request)
+  End-to-end tok/s   : 671.7   (all output tokens / all request time)
+  Wall time          : 3.58 s  (27.94 req/s incl. client overhead)
+=================================================================
+
+[client] Log saved to megakernel_dynamic/results/serving_v2/dps_fp16_auto.json
+[client] Compare two runs with: python compare_benchmarks.py <megakernel log> <baseline log>
+
+
+[bench] ===== megakernel: weights fp8, scheduler auto =====
+[warning] .env not found, using defaults.
+=================================================================
+Benchmark of Steps 1 and 2
+=================================================================
+  Server           : http://localhost:8000
+  Model            : Qwen/Qwen3-0.6B
+  Client           : openai SDK  (vLLM-compatible)
+  Server           : Megakernel (fp8, auto)
+  dtype            : fp8
+  Requests         : 100
+  Concurrency      : 1  (sequential)
+  Max tokens/reply : 32
+  Temperature      : 0.0  (greedy)
+  Warm-up requests : 3  (not timed)
+  Log file         : megakernel_dynamic/results/serving_v2/dps_fp8_auto.json
+=================================================================
+
+[client] waiting for server at http://localhost:8000ready 
+
+  Req  Latency (s)  In tok  Out tok  Question
+  ---------------------------------------------------------------
+    1        0.026s      19        8  What is the capital of Norway?
+    2        0.051s      22       32  Who was the third German king of Ba
+    3        0.051s      23       32  Explain the theory of relativity in
+    4        0.051s      22       32  What is the speed of light in a vac
+    5        0.049s      20       32  Who wrote the novel Moby Dick?
+    6        0.033s      20       15  What year did World War II end?
+    7        0.031s      20       13  What is the chemical formula for wa
+    8        0.047s      18       32  Who painted the Mona Lisa?
+    9        0.050s      22       32  What is the largest planet in the s
+   10        0.049s      21       32  Who developed the theory of general
+   11        0.040s      22       21  What is the boiling point of water 
+   12        0.028s      19       11  What is the capital of Japan?
+   13        0.051s      23       32  Who was the first person to walk on
+   14        0.051s      23       32  What is the square root of 144?
+   15        0.046s      17       32  Who invented the telephone?
+   16        0.050s      21       32  What is the longest river in the wo
+   17        0.028s      19       11  What is the capital of Australia?
+   18        0.047s      18       32  Who wrote Romeo and Juliet?
+   19        0.050s      21       32  What is the hardest natural substan
+   20        0.050s      21       32  What is the smallest country in the
+   21        0.050s      22       31  Who was the first President of the 
+   22        0.040s      19       23  What is the currency of Japan?
+   23        0.050s      21       32  What is the tallest mountain in the
+   24        0.047s      18       32  Who discovered penicillin?
+   25        0.049s      20       32  What is the atomic number of carbon
+   26        0.026s      19        9  What language is spoken in Brazil?
+   27        0.025s      19        8  What is the capital of Canada?
+   28        0.047s      18       32  Who invented the light bulb?
+   29        0.051s      22       32  What is the distance from Earth to 
+   30        0.049s      20       32  Who composed Beethoven's Fifth Symp
+   31        0.027s      19       10  What is the capital of Germany?
+   32        0.049s      20       32  What is the largest ocean on Earth?
+   33        0.048s      19       32  Who was Napoleon Bonaparte?
+   34        0.049s      20       32  What is the powerhouse of the cell?
+   35        0.027s      19       10  What is the capital of France?
+   36        0.048s      20       32  Who wrote 1984?
+   37        0.029s      20       11  What is the chemical symbol for gol
+   38        0.049s      20       32  How many continents are there on Ea
+   39        0.050s      23       31  Who was the first woman to win a No
+   40        0.026s      19        9  What is the capital of Brazil?
+   41        0.046s      17       32  What is photosynthesis?
+   42        0.046s      17       32  Who invented the internet?
+   43        0.049s      20       32  What is the largest continent by ar
+   44        0.028s      19       11  What is the capital of China?
+   45        0.046s      17       32  Who was Julius Caesar?
+   46        0.049s      20       32  What is the Pythagorean theorem?
+   47        0.028s      19       11  What is the capital of India?
+   48        0.048s      19       32  Who wrote the Harry Potter series?
+   49        0.037s      22       18  What is the melting point of iron i
+   50        0.025s      19        8  What is the capital of Russia?
+   51        0.045s      16       32  Who discovered gravity?
+   52        0.028s      19       11  What is the capital of Italy?
+   53        0.050s      22       32  What is the primary gas in Earth's 
+   54        0.049s      20       32  Who built the Great Wall of China?
+   55        0.025s      19        8  What is the capital of Spain?
+   56        0.050s      22       32  How many bones are in the adult hum
+   57        0.047s      18       32  Who was Cleopatra?
+   58        0.028s      19       11  What is the capital of Egypt?
+   59        0.052s      24       32  What is the speed of sound in air a
+   60        0.047s      18       32  Who invented the steam engine?
+   61        0.028s      19       11  What is the capital of Mexico?
+   62        0.049s      21       32  What is DNA and what does it do?
+   63        0.046s      17       32  Who was Albert Einstein?
+   64        0.030s      20       12  What is the capital of South Korea?
+   65        0.049s      21       32  What is the largest desert in the w
+   66        0.048s      19       32  Who wrote the Iliad?
+   67        0.026s      19        9  What is the capital of Argentina?
+   68        0.052s      24       32  What is the function of the kidney 
+   69        0.046s      17       32  Who was Isaac Newton?
+   70        0.029s      19       11  What is the capital of Nigeria?
+   71        0.051s      22       32  What is the cruising speed of a com
+   72        0.047s      18       32  Who invented the printing press?
+   73        0.029s      19       12  What is the capital of Turkey?
+   74        0.048s      19       32  What is the theory of evolution?
+   75        0.047s      18       32  Who was Marie Curie?
+   76        0.031s      20       13  What is the capital of Saudi Arabia
+   77        0.029s      20       11  What is the chemical symbol for sil
+   78        0.048s      19       32  Who was Genghis Khan?
+   79        0.028s      19       11  What is the capital of Indonesia?
+   80        0.049s      20       32  What is the function of the heart?
+   81        0.047s      18       32  Who was Leonardo da Vinci?
+   82        0.025s      19        8  What is the capital of Pakistan?
+   83        0.049s      21       32  What is the largest mammal on Earth
+   84        0.048s      19       32  Who wrote Don Quixote?
+   85        0.030s      20       12  What is the capital of the Netherla
+   86        0.049s      21       32  What is the rotational speed of the
+   87        0.046s      17       32  Who was Socrates?
+   88        0.025s      19        8  What is the capital of Sweden?
+   89        0.029s      20       11  What is the chemical symbol for iro
+   90        0.046s      17       32  Who was Nikola Tesla?
+   91        0.028s      19       11  What is the capital of Poland?
+   92        0.034s      22       15  What is the largest organ in the hu
+   93        0.046s      17       32  Who invented the airplane?
+   94        0.028s      19       11  What is the capital of Ukraine?
+   95        0.048s      19       32  What is the Big Bang theory?
+   96        0.046s      17       32  Who was Charles Darwin?
+   97        0.028s      19       11  What is the capital of Greece?
+   98        0.029s      20       11  What is the chemical symbol for sod
+   99        0.045s      16       32  Who was Aristotle?
+  100        0.025s      19        8  What is the capital of Portugal?
+
+=================================================================
+LATENCY SUMMARY  Megakernel (fp8, auto)
+=================================================================
+  Requests sent      : 100
+  Successful         : 100
+  Failed             : 0
+  Average latency    : 0.041 s   <- primary metric
+  Median latency     : 0.046 s
+  Std deviation      : 0.010 s
+  Min latency        : 0.025 s
+  Max latency        : 0.052 s
+  P90 latency        : 0.050 s
+  Throughput         : 24.46 req/s
+  Output tokens      : 2415  (24.1 per request)
+  Tokens/s           : 558.8   (mean of output tokens / latency per request)
+  End-to-end tok/s   : 590.6   (all output tokens / all request time)
+  Wall time          : 4.09 s  (24.45 req/s incl. client overhead)
+=================================================================
+
+[client] Log saved to megakernel_dynamic/results/serving_v2/dps_fp8_auto.json
+[client] Compare two runs with: python compare_benchmarks.py <megakernel log> <baseline log>
+
+
+[bench] ===== megakernel: weights fp4, scheduler auto =====
+[warning] .env not found, using defaults.
+=================================================================
+Benchmark of Steps 1 and 2
+=================================================================
+  Server           : http://localhost:8000
+  Model            : Qwen/Qwen3-0.6B
+  Client           : openai SDK  (vLLM-compatible)
+  Server           : Megakernel (fp4, auto)
+  dtype            : fp4
+  Requests         : 100
+  Concurrency      : 1  (sequential)
+  Max tokens/reply : 32
+  Temperature      : 0.0  (greedy)
+  Warm-up requests : 3  (not timed)
+  Log file         : megakernel_dynamic/results/serving_v2/dps_fp4_auto.json
+=================================================================
+
+[client] waiting for server at http://localhost:8000ready 
+
+  Req  Latency (s)  In tok  Out tok  Question
+  ---------------------------------------------------------------
+    1        0.025s      19        8  What is the capital of Norway?
+    2        0.050s      22       32  Who was the third German king of Ba
+    3        0.051s      23       32  Explain the theory of relativity in
+    4        0.050s      22       32  What is the speed of light in a vac
+    5        0.044s      20       28  Who wrote the novel Moby Dick?
+    6        0.032s      20       15  What year did World War II end?
+    7        0.039s      20       22  What is the chemical formula for wa
+    8        0.046s      18       32  Who painted the Mona Lisa?
+    9        0.050s      22       32  What is the largest planet in the s
+   10        0.048s      21       31  Who developed the theory of general
+   11        0.037s      22       18  What is the boiling point of water 
+   12        0.025s      19        8  What is the capital of Japan?
+   13        0.051s      23       32  Who was the first person to walk on
+   14        0.051s      23       32  What is the square root of 144?
+   15        0.045s      17       32  Who invented the telephone?
+   16        0.049s      21       32  What is the longest river in the wo
+   17        0.025s      19        8  What is the capital of Australia?
+   18        0.046s      18       32  Who wrote Romeo and Juliet?
+   19        0.049s      21       32  What is the hardest natural substan
+   20        0.047s      21       30  What is the smallest country in the
+   21        0.045s      22       27  Who was the first President of the 
+   22        0.029s      19       12  What is the currency of Japan?
+   23        0.050s      21       32  What is the tallest mountain in the
+   24        0.047s      18       32  Who discovered penicillin?
+   25        0.048s      20       32  What is the atomic number of carbon
+   26        0.026s      19        9  What language is spoken in Brazil?
+   27        0.025s      19        8  What is the capital of Canada?
+   28        0.046s      18       32  Who invented the light bulb?
+   29        0.050s      22       32  What is the distance from Earth to 
+   30        0.048s      20       32  Who composed Beethoven's Fifth Symp
+   31        0.025s      19        8  What is the capital of Germany?
+   32        0.048s      20       32  What is the largest ocean on Earth?
+   33        0.047s      19       32  Who was Napoleon Bonaparte?
+   34        0.048s      20       32  What is the powerhouse of the cell?
+   35        0.025s      19        8  What is the capital of France?
+   36        0.034s      20       17  Who wrote 1984?
+   37        0.028s      20       11  What is the chemical symbol for gol
+   38        0.049s      20       32  How many continents are there on Ea
+   39        0.051s      23       32  Who was the first woman to win a No
+   40        0.026s      19        9  What is the capital of Brazil?
+   41        0.045s      17       32  What is photosynthesis?
+   42        0.046s      17       32  Who invented the internet?
+   43        0.048s      20       32  What is the largest continent by ar
+   44        0.025s      19        8  What is the capital of China?
+   45        0.047s      17       32  Who was Julius Caesar?
+   46        0.048s      20       32  What is the Pythagorean theorem?
+   47        0.026s      19        9  What is the capital of India?
+   48        0.047s      19       32  Who wrote the Harry Potter series?
+   49        0.050s      22       32  What is the melting point of iron i
+   50        0.025s      19        8  What is the capital of Russia?
+   51        0.045s      16       32  Who discovered gravity?
+   52        0.025s      19        8  What is the capital of Italy?
+   53        0.050s      22       32  What is the primary gas in Earth's 
+   54        0.048s      20       32  Who built the Great Wall of China?
+   55        0.025s      19        8  What is the capital of Spain?
+   56        0.050s      22       32  How many bones are in the adult hum
+   57        0.046s      18       32  Who was Cleopatra?
+   58        0.025s      19        8  What is the capital of Egypt?
+   59        0.052s      24       32  What is the speed of sound in air a
+   60        0.046s      18       32  Who invented the steam engine?
+   61        0.026s      19        9  What is the capital of Mexico?
+   62        0.049s      21       32  What is DNA and what does it do?
+   63        0.046s      17       32  Who was Albert Einstein?
+   64        0.027s      20        9  What is the capital of South Korea?
+   65        0.049s      21       32  What is the largest desert in the w
+   66        0.047s      19       32  Who wrote the Iliad?
+   67        0.026s      19        9  What is the capital of Argentina?
+   68        0.052s      24       32  What is the function of the kidney 
+   69        0.045s      17       32  Who was Isaac Newton?
+   70        0.026s      19        9  What is the capital of Nigeria?
+   71        0.050s      22       32  What is the cruising speed of a com
+   72        0.046s      18       32  Who invented the printing press?
+   73        0.025s      19        8  What is the capital of Turkey?
+   74        0.047s      19       32  What is the theory of evolution?
+   75        0.046s      18       32  Who was Marie Curie?
+   76        0.037s      20       20  What is the capital of Saudi Arabia
+   77        0.028s      20       11  What is the chemical symbol for sil
+   78        0.047s      19       32  Who was Genghis Khan?
+   79        0.025s      19        8  What is the capital of Indonesia?
+   80        0.048s      20       32  What is the function of the heart?
+   81        0.046s      18       32  Who was Leonardo da Vinci?
+   82        0.025s      19        8  What is the capital of Pakistan?
+   83        0.049s      21       32  What is the largest mammal on Earth
+   84        0.047s      19       32  Who wrote Don Quixote?
+   85        0.027s      20        9  What is the capital of the Netherla
+   86        0.049s      21       32  What is the rotational speed of the
+   87        0.046s      17       32  Who was Socrates?
+   88        0.025s      19        8  What is the capital of Sweden?
+   89        0.028s      20       11  What is the chemical symbol for iro
+   90        0.046s      17       32  Who was Nikola Tesla?
+   91        0.025s      19        8  What is the capital of Poland?
+   92        0.050s      22       32  What is the largest organ in the hu
+   93        0.046s      17       32  Who invented the airplane?
+   94        0.026s      19        9  What is the capital of Ukraine?
+   95        0.047s      19       32  What is the Big Bang theory?
+   96        0.045s      17       32  Who was Charles Darwin?
+   97        0.025s      19        8  What is the capital of Greece?
+   98        0.028s      20       11  What is the chemical symbol for sod
+   99        0.045s      16       32  Who was Aristotle?
+  100        0.025s      19        8  What is the capital of Portugal?
+
+=================================================================
+LATENCY SUMMARY  Megakernel (fp4, auto)
+=================================================================
+  Requests sent      : 100
+  Successful         : 100
+  Failed             : 0
+  Average latency    : 0.040 s   <- primary metric
+  Median latency     : 0.046 s
+  Std deviation      : 0.010 s
+  Min latency        : 0.025 s
+  Max latency        : 0.052 s
+  P90 latency        : 0.050 s
+  Throughput         : 24.90 req/s
+  Output tokens      : 2377  (23.8 per request)
+  Tokens/s           : 553.9   (mean of output tokens / latency per request)
+  End-to-end tok/s   : 591.8   (all output tokens / all request time)
+  Wall time          : 4.02 s  (24.89 req/s incl. client overhead)
+=================================================================
+
+[client] Log saved to megakernel_dynamic/results/serving_v2/dps_fp4_auto.json
+[client] Compare two runs with: python compare_benchmarks.py <megakernel log> <baseline log>
+
+
+[bench] ===== vLLM (eager) =====
+[warning] .env not found, using defaults.
+=================================================================
+Benchmark of Steps 1 and 2
+=================================================================
+  Server           : http://localhost:8000
+  Model            : Qwen/Qwen3-0.6B
+  Client           : openai SDK  (vLLM-compatible)
+  Server           : vLLM (eager)
+  dtype            : float16
+  Requests         : 100
+  Concurrency      : 1  (sequential)
+  Max tokens/reply : 32
+  Temperature      : 0.0  (greedy)
+  Warm-up requests : 3  (not timed)
+  Log file         : megakernel_dynamic/results/serving_v2/vllm_eager.json
+=================================================================
+
+[client] waiting for server at http://localhost:8000ready 
+
+  Req  Latency (s)  In tok  Out tok  Question
+  ---------------------------------------------------------------
+    1        0.124s      19        8  What is the capital of Norway?
+    2        0.451s      22       32  Who was the third German king of Ba
+    3        0.422s      23       32  Explain the theory of relativity in
+    4        0.425s      22       32  What is the speed of light in a vac
+    5        0.381s      20       28  Who wrote the novel Moby Dick?
+    6        0.211s      20       15  What year did World War II end?
+    7        0.185s      20       13  What is the chemical formula for wa
+    8        0.419s      18       32  Who painted the Mona Lisa?
+    9        0.419s      22       32  What is the largest planet in the s
+   10        0.420s      21       32  Who developed the theory of general
+   11        0.291s      22       21  What is the boiling point of water 
+   12        0.173s      19       12  What is the capital of Japan?
+   13        0.418s      23       32  Who was the first person to walk on
+   14        0.422s      23       32  What is the square root of 144?
+   15        0.421s      17       32  Who invented the telephone?
+   16        0.423s      21       32  What is the longest river in the wo
+   17        0.160s      19       11  What is the capital of Australia?
+   18        0.422s      18       32  Who wrote Romeo and Juliet?
+   19        0.450s      21       32  What is the hardest natural substan
+   20        0.422s      21       32  What is the smallest country in the
+   21        0.420s      22       32  Who was the first President of the 
+   22        0.224s      19       15  What is the currency of Japan?
+   23        0.459s      21       32  What is the tallest mountain in the
+   24        0.431s      18       32  Who discovered penicillin?
+   25        0.444s      20       32  What is the atomic number of carbon
+   26        0.164s      19        9  What language is spoken in Brazil?
+   27        0.130s      19        8  What is the capital of Canada?
+   28        0.430s      18       32  Who invented the light bulb?
+   29        0.417s      22       32  What is the distance from Earth to 
+   30        0.418s      20       32  Who composed Beethoven's Fifth Symp
+   31        0.147s      19       10  What is the capital of Germany?
+   32        0.416s      20       32  What is the largest ocean on Earth?
+   33        0.415s      19       32  Who was Napoleon Bonaparte?
+   34        0.418s      20       32  What is the powerhouse of the cell?
+   35        0.145s      19       10  What is the capital of France?
+   36        0.417s      20       32  Who wrote 1984?
+   37        0.158s      20       11  What is the chemical symbol for gol
+   38        0.416s      20       32  How many continents are there on Ea
+   39        0.415s      23       32  Who was the first woman to win a No
+   40        0.132s      19        9  What is the capital of Brazil?
+   41        0.416s      17       32  What is photosynthesis?
+   42        0.413s      17       32  Who invented the internet?
+   43        0.416s      20       32  What is the largest continent by ar
+   44        0.158s      19       11  What is the capital of China?
+   45        0.418s      17       32  Who was Julius Caesar?
+   46        0.416s      20       32  What is the Pythagorean theorem?
+   47        0.162s      19       11  What is the capital of India?
+   48        0.417s      19       32  Who wrote the Harry Potter series?
+   49        0.210s      22       15  What is the melting point of iron i
+   50        0.120s      19        8  What is the capital of Russia?
+   51        0.422s      16       32  Who discovered gravity?
+   52        0.120s      19        8  What is the capital of Italy?
+   53        0.417s      22       32  What is the primary gas in Earth's 
+   54        0.417s      20       32  Who built the Great Wall of China?
+   55        0.120s      19        8  What is the capital of Spain?
+   56        0.377s      22       28  How many bones are in the adult hum
+   57        0.415s      18       32  Who was Cleopatra?
+   58        0.158s      19       11  What is the capital of Egypt?
+   59        0.428s      24       32  What is the speed of sound in air a
+   60        0.417s      18       32  Who invented the steam engine?
+   61        0.159s      19       11  What is the capital of Mexico?
+   62        0.417s      21       32  What is DNA and what does it do?
+   63        0.417s      17       32  Who was Albert Einstein?
+   64        0.172s      20       12  What is the capital of South Korea?
+   65        0.417s      21       32  What is the largest desert in the w
+   66        0.417s      19       32  Who wrote the Iliad?
+   67        0.185s      19       13  What is the capital of Argentina?
+   68        0.416s      24       32  What is the function of the kidney 
+   69        0.426s      17       32  Who was Isaac Newton?
+   70        0.165s      19       11  What is the capital of Nigeria?
+   71        0.446s      22       32  What is the cruising speed of a com
+   72        0.421s      18       32  Who invented the printing press?
+   73        0.171s      19       12  What is the capital of Turkey?
+   74        0.418s      19       32  What is the theory of evolution?
+   75        0.418s      18       32  Who was Marie Curie?
+   76        0.183s      20       13  What is the capital of Saudi Arabia
+   77        0.159s      20       11  What is the chemical symbol for sil
+   78        0.417s      19       32  Who was Genghis Khan?
+   79        0.159s      19       11  What is the capital of Indonesia?
+   80        0.431s      20       32  What is the function of the heart?
+   81        0.439s      18       32  Who was Leonardo da Vinci?
+   82        0.124s      19        8  What is the capital of Pakistan?
+   83        0.436s      21       32  What is the largest mammal on Earth
+   84        0.436s      19       32  Who wrote Don Quixote?
+   85        0.178s      20       12  What is the capital of the Netherla
+   86        0.430s      21       32  What is the rotational speed of the
+   87        0.440s      17       32  Who was Socrates?
+   88        0.165s      19       11  What is the capital of Sweden?
+   89        0.164s      20       11  What is the chemical symbol for iro
+   90        0.418s      17       32  Who was Nikola Tesla?
+   91        0.159s      19       11  What is the capital of Poland?
+   92        0.211s      22       15  What is the largest organ in the hu
+   93        0.436s      17       32  Who invented the airplane?
+   94        0.159s      19       11  What is the capital of Ukraine?
+   95        0.417s      19       32  What is the Big Bang theory?
+   96        0.432s      17       32  Who was Charles Darwin?
+   97        0.159s      19       11  What is the capital of Greece?
+   98        0.164s      20       11  What is the chemical symbol for sod
+   99        0.420s      16       32  Who was Aristotle?
+  100        0.120s      19        8  What is the capital of Portugal?
+
+=================================================================
+LATENCY SUMMARY  vLLM (eager)
+=================================================================
+  Requests sent      : 100
+  Successful         : 100
+  Failed             : 0
+  Average latency    : 0.324 s   <- primary metric
+  Median latency     : 0.416 s
+  Std deviation      : 0.128 s
+  Min latency        : 0.120 s
+  Max latency        : 0.459 s
+  P90 latency        : 0.435 s
+  Throughput         : 3.08 req/s
+  Output tokens      : 2403  (24.0 per request)
+  Tokens/s           : 72.7   (mean of output tokens / latency per request)
+  End-to-end tok/s   : 74.1   (all output tokens / all request time)
+  Wall time          : 32.44 s  (3.08 req/s incl. client overhead)
+=================================================================
+
+[client] Log saved to megakernel_dynamic/results/serving_v2/vllm_eager.json
+[client] Compare two runs with: python compare_benchmarks.py <megakernel log> <baseline log>
+
+
+[bench] ===== vLLM (graphs) =====
+[warning] .env not found, using defaults.
+=================================================================
+Benchmark of Steps 1 and 2
+=================================================================
+  Server           : http://localhost:8000
+  Model            : Qwen/Qwen3-0.6B
+  Client           : openai SDK  (vLLM-compatible)
+  Server           : vLLM (graphs)
+  dtype            : float16
+  Requests         : 100
+  Concurrency      : 1  (sequential)
+  Max tokens/reply : 32
+  Temperature      : 0.0  (greedy)
+  Warm-up requests : 3  (not timed)
+  Log file         : megakernel_dynamic/results/serving_v2/vllm_graphs.json
+=================================================================
+
+[client] waiting for server at http://localhost:8000ready 
+
+  Req  Latency (s)  In tok  Out tok  Question
+  ---------------------------------------------------------------
+    1        0.023s      19        8  What is the capital of Norway?
+    2        0.056s      22       32  Who was the third German king of Ba
+    3        0.056s      23       32  Explain the theory of relativity in
+    4        0.055s      22       32  What is the speed of light in a vac
+    5        0.052s      20       28  Who wrote the novel Moby Dick?
+    6        0.033s      20       15  What year did World War II end?
+    7        0.030s      20       13  What is the chemical formula for wa
+    8        0.056s      18       32  Who painted the Mona Lisa?
+    9        0.056s      22       32  What is the largest planet in the s
+   10        0.056s      21       32  Who developed the theory of general
+   11        0.041s      22       21  What is the boiling point of water 
+   12        0.028s      19       12  What is the capital of Japan?
+   13        0.055s      23       32  Who was the first person to walk on
+   14        0.055s      23       32  What is the square root of 144?
+   15        0.062s      17       32  Who invented the telephone?
+   16        0.057s      21       32  What is the longest river in the wo
+   17        0.027s      19       11  What is the capital of Australia?
+   18        0.056s      18       32  Who wrote Romeo and Juliet?
+   19        0.056s      21       32  What is the hardest natural substan
+   20        0.055s      21       32  What is the smallest country in the
+   21        0.055s      22       32  Who was the first President of the 
+   22        0.032s      19       15  What is the currency of Japan?
+   23        0.055s      21       32  What is the tallest mountain in the
+   24        0.055s      18       32  Who discovered penicillin?
+   25        0.056s      20       32  What is the atomic number of carbon
+   26        0.024s      19        9  What language is spoken in Brazil?
+   27        0.023s      19        8  What is the capital of Canada?
+   28        0.056s      18       32  Who invented the light bulb?
+   29        0.056s      22       32  What is the distance from Earth to 
+   30        0.055s      20       32  Who composed Beethoven's Fifth Symp
+   31        0.026s      19       10  What is the capital of Germany?
+   32        0.056s      20       32  What is the largest ocean on Earth?
+   33        0.055s      19       32  Who was Napoleon Bonaparte?
+   34        0.055s      20       32  What is the powerhouse of the cell?
+   35        0.026s      19       10  What is the capital of France?
+   36        0.056s      20       32  Who wrote 1984?
+   37        0.027s      20       11  What is the chemical symbol for gol
+   38        0.055s      20       32  How many continents are there on Ea
+   39        0.055s      23       32  Who was the first woman to win a No
+   40        0.029s      19        9  What is the capital of Brazil?
+   41        0.056s      17       32  What is photosynthesis?
+   42        0.055s      17       32  Who invented the internet?
+   43        0.055s      20       32  What is the largest continent by ar
+   44        0.027s      19       11  What is the capital of China?
+   45        0.055s      17       32  Who was Julius Caesar?
+   46        0.055s      20       32  What is the Pythagorean theorem?
+   47        0.027s      19       11  What is the capital of India?
+   48        0.055s      19       32  Who wrote the Harry Potter series?
+   49        0.033s      22       15  What is the melting point of iron i
+   50        0.023s      19        8  What is the capital of Russia?
+   51        0.059s      16       32  Who discovered gravity?
+   52        0.023s      19        8  What is the capital of Italy?
+   53        0.056s      22       32  What is the primary gas in Earth's 
+   54        0.056s      20       32  Who built the Great Wall of China?
+   55        0.023s      19        8  What is the capital of Spain?
+   56        0.051s      22       28  How many bones are in the adult hum
+   57        0.056s      18       32  Who was Cleopatra?
+   58        0.027s      19       11  What is the capital of Egypt?
+   59        0.056s      24       32  What is the speed of sound in air a
+   60        0.055s      18       32  Who invented the steam engine?
+   61        0.027s      19       11  What is the capital of Mexico?
+   62        0.055s      21       32  What is DNA and what does it do?
+   63        0.055s      17       32  Who was Albert Einstein?
+   64        0.028s      20       12  What is the capital of South Korea?
+   65        0.056s      21       32  What is the largest desert in the w
+   66        0.055s      19       32  Who wrote the Iliad?
+   67        0.030s      19       13  What is the capital of Argentina?
+   68        0.056s      24       32  What is the function of the kidney 
+   69        0.055s      17       32  Who was Isaac Newton?
+   70        0.027s      19       11  What is the capital of Nigeria?
+   71        0.055s      22       32  What is the cruising speed of a com
+   72        0.056s      18       32  Who invented the printing press?
+   73        0.028s      19       12  What is the capital of Turkey?
+   74        0.055s      19       32  What is the theory of evolution?
+   75        0.055s      18       32  Who was Marie Curie?
+   76        0.030s      20       13  What is the capital of Saudi Arabia
+   77        0.027s      20       11  What is the chemical symbol for sil
+   78        0.055s      19       32  Who was Genghis Khan?
+   79        0.027s      19       11  What is the capital of Indonesia?
+   80        0.055s      20       32  What is the function of the heart?
+   81        0.055s      18       32  Who was Leonardo da Vinci?
+   82        0.023s      19        8  What is the capital of Pakistan?
+   83        0.055s      21       32  What is the largest mammal on Earth
+   84        0.055s      19       32  Who wrote Don Quixote?
+   85        0.028s      20       12  What is the capital of the Netherla
+   86        0.056s      21       32  What is the rotational speed of the
+   87        0.055s      17       32  Who was Socrates?
+   88        0.027s      19       11  What is the capital of Sweden?
+   89        0.027s      20       11  What is the chemical symbol for iro
+   90        0.055s      17       32  Who was Nikola Tesla?
+   91        0.027s      19       11  What is the capital of Poland?
+   92        0.033s      22       15  What is the largest organ in the hu
+   93        0.055s      17       32  Who invented the airplane?
+   94        0.027s      19       11  What is the capital of Ukraine?
+   95        0.055s      19       32  What is the Big Bang theory?
+   96        0.055s      17       32  Who was Charles Darwin?
+   97        0.027s      19       11  What is the capital of Greece?
+   98        0.027s      20       11  What is the chemical symbol for sod
+   99        0.055s      16       32  Who was Aristotle?
+  100        0.023s      19        8  What is the capital of Portugal?
+
+=================================================================
+LATENCY SUMMARY  vLLM (graphs)
+=================================================================
+  Requests sent      : 100
+  Successful         : 100
+  Failed             : 0
+  Average latency    : 0.045 s   <- primary metric
+  Median latency     : 0.055 s
+  Std deviation      : 0.014 s
+  Min latency        : 0.023 s
+  Max latency        : 0.062 s
+  P90 latency        : 0.056 s
+  Throughput         : 22.28 req/s
+  Output tokens      : 2403  (24.0 per request)
+  Tokens/s           : 509.4   (mean of output tokens / latency per request)
+  End-to-end tok/s   : 535.4   (all output tokens / all request time)
+  Wall time          : 4.49 s  (22.27 req/s incl. client overhead)
+=================================================================
+
+[client] Log saved to megakernel_dynamic/results/serving_v2/vllm_graphs.json
+[client] Compare two runs with: python compare_benchmarks.py <megakernel log> <baseline log>
+
+
+[bench] ===== comparison (NVIDIA B200, max_tokens 32) =====
+| Metric | Megakernel (fp16, auto) | Megakernel (fp4, auto) | Megakernel (fp8, auto) | vLLM (graphs) | vLLM (eager) |
+|---|---|---|---|---|---|
+| Avg latency | 0.036 s (**9.07x**) | 0.040 s (**8.08x**) | 0.041 s (**7.93x**) | 0.045 s (**7.23x**) | 0.324 s |
+| Median latency | 0.040 s (**10.32x**) | 0.046 s (**9.06x**) | 0.046 s (**9.00x**) | 0.055 s (**7.54x**) | 0.416 s |
+| P90 latency | 0.044 s (**9.82x**) | 0.050 s (**8.69x**) | 0.050 s (**8.63x**) | 0.056 s (**7.80x**) | 0.435 s |
+| Tokens/s (per request) | 635.8 (**8.75x**) | 553.9 (**7.62x**) | 558.8 (**7.69x**) | 509.4 (**7.01x**) | 72.7 |
+| End-to-end throughput | 671.7 tok/s (**9.07x**) | 591.8 tok/s (**7.99x**) | 590.6 tok/s (**7.97x**) | 535.4 tok/s (**7.23x**) | 74.1 tok/s |
+| Req/s | 27.95 (**9.07x**) | 24.90 (**8.08x**) | 24.46 (**7.93x**) | 22.28 (**7.23x**) | 3.08 |
+| Latency min-max | 0.022-0.046 s | 0.025-0.052 s | 0.025-0.052 s | 0.023-0.062 s | 0.120-0.459 s |
+| Mean output tokens | 24.0 | 23.8 | 24.1 | 24.0 | 24.0 |
+| Successful / failed | 100 / 0 | 100 / 0 | 100 / 0 | 100 / 0 | 100 / 0 |
+
+Comparability checks against the baseline:
+  Megakernel (fp16, auto): 99/100 answers identical to the baseline; on those, output tokens differ by +0 (median)
+  Megakernel (fp4, auto): 13/100 answers identical to the baseline; on those, output tokens differ by +0 (median)
+  Megakernel (fp8, auto): 43/100 answers identical to the baseline; on those, output tokens differ by +0 (median)
+  vLLM (graphs): 98/100 answers identical to the baseline; on those, output tokens differ by +0 (median)
+
+[bench] logs in megakernel_dynamic/results/serving_v2
+
+######## 10:45:40 ALL DONE

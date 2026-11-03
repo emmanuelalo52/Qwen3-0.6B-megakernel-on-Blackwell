@@ -1,0 +1,98 @@
+fp16 atomic: compiled + launched in 2.1 s; prompt 19 tokens -> 18 prefill steps, 679704 tiles in the launch
+
+read 1 at +4.1 s
+  ticket        679852
+  qkv[0]         19712  = next: step 22 layer 0, 0/32 done
+  qkv[1]         19712  = next: step 22 layer 0, 0/32 done
+  qkv[2]         19712  = next: step 22 layer 0, 0/32 done
+  qkv[3]         19712  = next: step 22 layer 0, 0/32 done
+  qkv[4]         19712  = next: step 22 layer 0, 0/32 done
+  qkv[5]         19712  = next: step 22 layer 0, 0/32 done
+  qkv[6]         19712  = next: step 22 layer 0, 0/32 done
+  qkv[7]         19712  = next: step 22 layer 0, 0/32 done
+  asplit[0]       4928  = next: step 22 layer 0, 0/8 done
+  asplit[1]       4928  = next: step 22 layer 0, 0/8 done
+  asplit[2]       4928  = next: step 22 layer 0, 0/8 done
+  asplit[3]       4928  = next: step 22 layer 0, 0/8 done
+  asplit[4]       4928  = next: step 22 layer 0, 0/8 done
+  asplit[5]       4928  = next: step 22 layer 0, 0/8 done
+  asplit[6]       4928  = next: step 22 layer 0, 0/8 done
+  asplit[7]       4928  = next: step 22 layer 0, 0/8 done
+  attn            4928  = next: step 22 layer 0, 0/8 done
+  oproj          78848  = next: step 22 layer 0, 0/128 done
+  gateup        236544  = next: step 22 layer 0, 0/384 done
+  down          157696  = next: step 22 layer 0, 0/256 done
+  lm_arrive       9496  = 4 decode steps + 0/2374
+  lm_done            4  = 4 decode steps + 0/1
+  eos                0
+
+read 2 at +6.1 s  (no change since last read)
+  ticket        679852
+  qkv[0]         19712  = next: step 22 layer 0, 0/32 done
+  qkv[1]         19712  = next: step 22 layer 0, 0/32 done
+  qkv[2]         19712  = next: step 22 layer 0, 0/32 done
+  qkv[3]         19712  = next: step 22 layer 0, 0/32 done
+  qkv[4]         19712  = next: step 22 layer 0, 0/32 done
+  qkv[5]         19712  = next: step 22 layer 0, 0/32 done
+  qkv[6]         19712  = next: step 22 layer 0, 0/32 done
+  qkv[7]         19712  = next: step 22 layer 0, 0/32 done
+  asplit[0]       4928  = next: step 22 layer 0, 0/8 done
+  asplit[1]       4928  = next: step 22 layer 0, 0/8 done
+  asplit[2]       4928  = next: step 22 layer 0, 0/8 done
+  asplit[3]       4928  = next: step 22 layer 0, 0/8 done
+  asplit[4]       4928  = next: step 22 layer 0, 0/8 done
+  asplit[5]       4928  = next: step 22 layer 0, 0/8 done
+  asplit[6]       4928  = next: step 22 layer 0, 0/8 done
+  asplit[7]       4928  = next: step 22 layer 0, 0/8 done
+  attn            4928  = next: step 22 layer 0, 0/8 done
+  oproj          78848  = next: step 22 layer 0, 0/128 done
+  gateup        236544  = next: step 22 layer 0, 0/384 done
+  down          157696  = next: step 22 layer 0, 0/256 done
+  lm_arrive       9496  = 4 decode steps + 0/2374
+  lm_done            4  = 4 decode steps + 0/1
+  eos                0
+
+read 3 at +8.1 s  (no change since last read)
+  ticket        679852
+  qkv[0]         19712  = next: step 22 layer 0, 0/32 done
+  qkv[1]         19712  = next: step 22 layer 0, 0/32 done
+  qkv[2]         19712  = next: step 22 layer 0, 0/32 done
+  qkv[3]         19712  = next: step 22 layer 0, 0/32 done
+  qkv[4]         19712  = next: step 22 layer 0, 0/32 done
+  qkv[5]         19712  = next: step 22 layer 0, 0/32 done
+  qkv[6]         19712  = next: step 22 layer 0, 0/32 done
+  qkv[7]         19712  = next: step 22 layer 0, 0/32 done
+  asplit[0]       4928  = next: step 22 layer 0, 0/8 done
+  asplit[1]       4928  = next: step 22 layer 0, 0/8 done
+  asplit[2]       4928  = next: step 22 layer 0, 0/8 done
+  asplit[3]       4928  = next: step 22 layer 0, 0/8 done
+  asplit[4]       4928  = next: step 22 layer 0, 0/8 done
+  asplit[5]       4928  = next: step 22 layer 0, 0/8 done
+  asplit[6]       4928  = next: step 22 layer 0, 0/8 done
+  asplit[7]       4928  = next: step 22 layer 0, 0/8 done
+  attn            4928  = next: step 22 layer 0, 0/8 done
+  oproj          78848  = next: step 22 layer 0, 0/128 done
+  gateup        236544  = next: step 22 layer 0, 0/384 done
+  down          157696  = next: step 22 layer 0, 0/256 done
+  lm_arrive       9496  = 4 decode steps + 0/2374
+  lm_done            4  = 4 decode steps + 0/1
+  eos                0
+
+per-CTA position (148 CTAs)
+  compute:  148 CTAs  tile done, fetching next   on a LM head tile
+  load:     148 CTAs  copies issued, fetching next on a LM head tile
+  first CTAs: cta | compute ticket, where, stage/parity | load ticket, where, stage/parity
+      0 |  679689 tile done, fetching next 2/1 |  679689 copies issued, fetching next 2/0
+      1 |  679657 tile done, fetching next 2/0 |  679657 copies issued, fetching next 2/1
+      2 |  679659 tile done, fetching next 4/0 |  679659 copies issued, fetching next 4/1
+      3 |  679678 tile done, fetching next 2/1 |  679678 copies issued, fetching next 2/0
+      4 |  679580 tile done, fetching next 3/0 |  679580 copies issued, fetching next 3/1
+      5 |  679672 tile done, fetching next 3/0 |  679672 copies issued, fetching next 3/1
+      6 |  679619 tile done, fetching next 1/1 |  679619 copies issued, fetching next 1/0
+      7 |  679620 tile done, fetching next 3/0 |  679620 copies issued, fetching next 3/1
+      8 |  679661 tile done, fetching next 1/1 |  679661 copies issued, fetching next 1/0
+      9 |  679688 tile done, fetching next 3/0 |  679688 copies issued, fetching next 3/1
+     10 |  679624 tile done, fetching next 2/0 |  679624 copies issued, fetching next 2/1
+     11 |  679621 tile done, fetching next 2/0 |  679621 copies issued, fetching next 2/1
+
+the launch finished: not hung

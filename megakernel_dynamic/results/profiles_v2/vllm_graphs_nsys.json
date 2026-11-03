@@ -1,0 +1,235 @@
+{
+  "meta": {
+    "step": "vLLM graphs (nsys)",
+    "label": "vLLM graphs (nsys)",
+    "server": "http://localhost:8000",
+    "model": "Qwen/Qwen3-0.6B",
+    "client": "openai SDK",
+    "dtype": "float16",
+    "kernel": "vLLM graphs (nsys)",
+    "warmup": 0,
+    "concurrency": 1,
+    "max_tokens": 128,
+    "temperature": 0.0
+  },
+  "summary": {
+    "num_requests": 20,
+    "successful": 20,
+    "failed": 0,
+    "avg_latency_s": 0.1056,
+    "median_latency_s": 0.0926,
+    "std_latency_s": 0.0656,
+    "min_latency_s": 0.0363,
+    "max_latency_s": 0.27,
+    "throughput_rps": 9.4663,
+    "p90_latency_s": 0.2575,
+    "output_tokens": 889,
+    "mean_output_tokens": 44.45,
+    "tokens_per_s": 390.94,
+    "e2e_tokens_per_s": 420.73,
+    "wall_time_s": 2.1132,
+    "wall_rps": 9.4642
+  },
+  "requests": [
+    {
+      "index": 0,
+      "question": "What is the capital of Norway?",
+      "answer": "The capital of Norway is Oslo.",
+      "latency_s": 0.069,
+      "prompt_tokens": 19,
+      "output_tokens": 8,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 1,
+      "question": "Who was the third German king of Bavaria?",
+      "answer": "The third German king of Bavaria was **Hermann I** (Hermann I of Bavaria). He was the king of Bavaria from **1346** to **1374**. He is known for his efforts to strengthen the Bavarian state and his policies during his reign.",
+      "latency_s": 0.1428,
+      "prompt_tokens": 22,
+      "output_tokens": 63,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 2,
+      "question": "Explain the theory of relativity in simple terms.",
+      "answer": "Sure! Here's a simple explanation of Einstein's theory of relativity:\n\n### **Einstein's Theory of Relativity**\n\nEinstein came up with two theories that changed our understanding of space, time, and gravity. They are called **Special Relativity** and **General Relativity**.\n\n#### **1. Special Relativity (1905)**\n\n- **What it says**:  \n  In the past, we thought that **time and space were absolute**\u2014meaning they didn\u2019t change when you moved.  \n  But Einstein said that **time and space are not absolute**. They can change depending on how fast you",
+      "latency_s": 0.2698,
+      "prompt_tokens": 23,
+      "output_tokens": 128,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 3,
+      "question": "What is the speed of light in a vacuum?",
+      "answer": "The speed of light in a vacuum is **approximately 299,792,458 meters per second**, or **299,792,458 km/s**. This value is a fundamental constant in physics and is used in the context of Einstein's theory of relativity.",
+      "latency_s": 0.1459,
+      "prompt_tokens": 22,
+      "output_tokens": 66,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 4,
+      "question": "Who wrote the novel Moby Dick?",
+      "answer": "The novel *Moby Dick* was written by **Arthur Conan Doyle**. It was first published in 1874.",
+      "latency_s": 0.0722,
+      "prompt_tokens": 20,
+      "output_tokens": 28,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 5,
+      "question": "What year did World War II end?",
+      "answer": "World War II ended on **August 1945**.",
+      "latency_s": 0.0447,
+      "prompt_tokens": 20,
+      "output_tokens": 15,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 6,
+      "question": "What is the chemical formula for water?",
+      "answer": "The chemical formula for water is **H\u2082O**.",
+      "latency_s": 0.0401,
+      "prompt_tokens": 20,
+      "output_tokens": 13,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 7,
+      "question": "Who painted the Mona Lisa?",
+      "answer": "The Mona Lisa is a famous painting by **Leonardo da Vinci**, an Italian artist from the 15th century. It is one of the most celebrated works of art in the world.",
+      "latency_s": 0.0944,
+      "prompt_tokens": 18,
+      "output_tokens": 40,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 8,
+      "question": "What is the largest planet in the solar system?",
+      "answer": "The largest planet in the solar system is **Jupiter**. It is the second-largest planet, following Saturn. Jupiter is a gas giant with a massive radius of approximately 69.6 million kilometers.",
+      "latency_s": 0.0997,
+      "prompt_tokens": 22,
+      "output_tokens": 43,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 9,
+      "question": "Who developed the theory of general relativity?",
+      "answer": "The theory of general relativity was developed by **Albert Einstein**. He formulated this theory in 1915, which revolutionized our understanding of gravity and space-time.",
+      "latency_s": 0.0908,
+      "prompt_tokens": 21,
+      "output_tokens": 37,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 10,
+      "question": "What is the boiling point of water in Celsius?",
+      "answer": "The boiling point of water is **100\u00b0C** at standard atmospheric pressure (1 atm).",
+      "latency_s": 0.0563,
+      "prompt_tokens": 22,
+      "output_tokens": 21,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 11,
+      "question": "What is the capital of Japan?",
+      "answer": "The capital of Japan is **Osaka City**.",
+      "latency_s": 0.0383,
+      "prompt_tokens": 19,
+      "output_tokens": 12,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 12,
+      "question": "Who was the first person to walk on the moon?",
+      "answer": "The first person to walk on the Moon was **Neil Armstrong** of the United States. He and his team, the Apollo 17 mission, successfully landed on the Moon on July 20, 1969, and became the first humans to walk on the surface of the Moon.",
+      "latency_s": 0.1378,
+      "prompt_tokens": 23,
+      "output_tokens": 62,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 13,
+      "question": "What is the square root of 144?",
+      "answer": "The square root of 144 is:\n\n$$\n\\sqrt{144} = 12\n$$\n\nSo, the answer is **12**.",
+      "latency_s": 0.0898,
+      "prompt_tokens": 23,
+      "output_tokens": 37,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 14,
+      "question": "Who invented the telephone?",
+      "answer": "The invention of the telephone is attributed to **Alexander Graham Bell**. He is credited with developing the first practical telephone system in the 1870s. Bell's work involved creating a system that could transmit sound through wires, which laid the foundation for modern telecommunications.",
+      "latency_s": 0.1277,
+      "prompt_tokens": 17,
+      "output_tokens": 56,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 15,
+      "question": "What is the longest river in the world?",
+      "answer": "The longest river in the world is the **Amazon River**. It flows through South America and is one of the most significant rivers in the world. Its length is approximately **6,400 kilometers**.",
+      "latency_s": 0.1019,
+      "prompt_tokens": 21,
+      "output_tokens": 44,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 16,
+      "question": "What is the capital of Australia?",
+      "answer": "The capital of Australia is **Canberra**.",
+      "latency_s": 0.0363,
+      "prompt_tokens": 19,
+      "output_tokens": 11,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 17,
+      "question": "Who wrote Romeo and Juliet?",
+      "answer": "Romeo and Juliet is a play written by **William Shakespeare**. It was first performed in 1595 and is one of his most famous works.",
+      "latency_s": 0.0861,
+      "prompt_tokens": 18,
+      "output_tokens": 35,
+      "finish_reason": "stop",
+      "error": null
+    },
+    {
+      "index": 18,
+      "question": "What is the hardest natural substance on Earth?",
+      "answer": "The question of what is the hardest natural substance on Earth is a fascinating one, but it's important to note that the concept of \"hardest\" is subjective and depends on the context. However, in terms of physical properties, some substances are considered extremely hard:\n\n1. **Diamonds**: Diamonds are the hardest known natural substance. They are composed of carbon atoms arranged in a crystalline structure, which gives them exceptional hardness and durability.\n\n2. **Silicon Carbide (SiC)**: This is another very hard material, known for its high hardness and thermal resistance.\n\n3. **Copper**: While not as hard as diamonds",
+      "latency_s": 0.27,
+      "prompt_tokens": 21,
+      "output_tokens": 128,
+      "finish_reason": "length",
+      "error": null
+    },
+    {
+      "index": 19,
+      "question": "What is the smallest country in the world?",
+      "answer": "The smallest country in the world is **Isle of Man**. It is a British overseas territory located in the South Atlantic, and it is the smallest country in the world in terms of land area.",
+      "latency_s": 0.0994,
+      "prompt_tokens": 21,
+      "output_tokens": 42,
+      "finish_reason": "stop",
+      "error": null
+    }
+  ]
+}

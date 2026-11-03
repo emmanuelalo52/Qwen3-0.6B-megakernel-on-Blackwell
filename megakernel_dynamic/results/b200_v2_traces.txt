@@ -1,0 +1,288 @@
+
+##### fp16 atomic  [NVIDIA B200]  138520 tiles over 8 decode steps, 148 SMs, globaltimer step ~32 ns
+token step: 884.8 us traced | 879.6 us untraced (qwen_dps_C)
+
+per tile (mean us)  tiles/step   queue  dep-wait     prep  w-wait   other    busy
+  QKV                    3584    5.46    3.84     0.40    0.12    1.82    6.18
+  ATTN                   1792    5.86    3.42     0.00    0.00    1.55    4.97
+  O-proj                 3584    5.99    8.78     0.22    0.13    1.46   10.59
+  gate/up                3584    9.59    5.26     0.39    0.22    2.06    7.91
+  down                   3584    6.77    4.14     0.43    0.08    1.52    6.18
+  LM head                1187    6.61    0.64     0.06    0.32    6.09    7.11
+  queue = ticket waiting in the CTA's claim-ahead ring; dep-wait = waiting for the counters it reads;
+  other = dot products, reductions, barriers and the done-signal
+
+critical path    links/step  us/step   segment  handoff   spread  (mean us per link)
+  QKV                 28     163.8     5.85     0.22     5.62
+  ATTN                28     215.7     7.70    -2.77    10.47
+  O-proj              28     131.9     4.71     0.20     4.51
+  gate/up             28     166.7     5.95     0.25     5.71
+  down                28     145.3     5.19     0.23     4.96
+  LM head              1      61.5    61.51     0.20    61.31
+  sum                        884.8
+
+balance (mean per phase)  tiles  even share  busiest SM  SMs used  phase duration us
+  QKV                         128        0.86        1.94       116               5.63
+  ATTN                         64        0.43        1.86        55              10.40
+  O-proj                      128        0.86        2.00       107               4.52
+  gate/up                     128        0.86        2.00       108               5.71
+  down                        128        0.86        2.00       111               4.96
+
+SM time: 32% in tiles, 66% waiting on dependencies, 2% between tiles (mean gap 0.16 us); 117 tiles per SM per step
+saved megakernel_dynamic/results/traces_v2/fp16_atomic.npz
+
+##### fp16 static  [NVIDIA B200]  138520 tiles over 8 decode steps, 148 SMs, globaltimer step ~32 ns
+token step: 577.1 us traced | 570.3 us untraced (qwen_dps_C)
+
+per tile (mean us)  tiles/step   queue  dep-wait     prep  w-wait   other    busy
+  QKV                    3584    3.35    1.40     0.45    0.12    1.75    3.73
+  ATTN                   1792    3.76    1.57     0.00    0.00    2.04    3.61
+  O-proj                 3584    3.22    5.78     0.23    0.13    1.39    7.54
+  gate/up                3584    6.88    1.42     0.50    0.22    2.16    4.29
+  down                   3584    4.36    1.19     0.60    0.08    1.59    3.46
+  LM head                1187    6.50    0.32     0.05    0.32    6.08    6.78
+  queue = ticket waiting in the CTA's claim-ahead ring; dep-wait = waiting for the counters it reads;
+  other = dot products, reductions, barriers and the done-signal
+
+critical path    links/step  us/step   segment  handoff   spread  (mean us per link)
+  QKV                 28      82.3     2.94     0.20     2.74
+  ATTN                28     174.5     6.23     0.06     6.17
+  O-proj              28      67.4     2.41     0.21     2.20
+  gate/up             28     102.0     3.64     0.24     3.40
+  down                28      87.7     3.13     0.23     2.91
+  LM head              1      63.1    63.15     0.18    62.97
+  sum                        577.1
+
+balance (mean per phase)  tiles  even share  busiest SM  SMs used  phase duration us
+  QKV                         128        0.86        1.00       128               2.74
+  ATTN                         64        0.43        1.00        64               6.16
+  O-proj                      128        0.86        1.00       128               2.20
+  gate/up                     128        0.86        1.00       128               3.40
+  down                        128        0.86        1.00       128               2.91
+
+SM time: 52% in tiles, 45% waiting on dependencies, 3% between tiles (mean gap 0.16 us); 117 tiles per SM per step
+saved megakernel_dynamic/results/traces_v2/fp16_static.npz
+
+##### fp16 clc  [NVIDIA B200]  138520 tiles over 8 decode steps, 148 SMs, globaltimer step ~32 ns
+token step: 903.7 us traced | 832.7 us untraced (qwen_dps_C)
+
+per tile (mean us)  tiles/step   queue  dep-wait     prep  w-wait   other    busy
+  QKV                    3584    5.30    3.89     0.40    0.12    1.83    6.25
+  ATTN                   1792    5.74    3.52     0.00    0.00    1.51    5.03
+  O-proj                 3584    5.81    9.56     0.22    0.13    1.37   11.28
+  gate/up                3584   10.19    5.09     0.40    0.22    2.06    7.76
+  down                   3584    6.45    4.33     0.44    0.08    1.50    6.35
+  LM head                1187    6.40    0.67     0.06    0.32    6.08    7.13
+  queue = ticket waiting in the CTA's claim-ahead ring; dep-wait = waiting for the counters it reads;
+  other = dot products, reductions, barriers and the done-signal
+
+critical path    links/step  us/step   segment  handoff   spread  (mean us per link)
+  QKV                 28     169.1     6.04     0.23     5.81
+  ATTN                28     233.5     8.34    -3.01    11.34
+  O-proj              28     124.1     4.43     0.20     4.23
+  gate/up             28     171.2     6.11     0.25     5.86
+  down                28     144.4     5.16     0.25     4.91
+  LM head              1      61.5    61.54     0.19    61.35
+  sum                        903.7
+
+balance (mean per phase)  tiles  even share  busiest SM  SMs used  phase duration us
+  QKV                         128        0.86        1.96       115               5.81
+  ATTN                         64        0.43        1.91        54              11.32
+  O-proj                      128        0.86        2.00       107               4.24
+  gate/up                     128        0.86        2.00       108               5.85
+  down                        128        0.86        2.00       111               4.91
+
+SM time: 31% in tiles, 67% waiting on dependencies, 2% between tiles (mean gap 0.16 us); 117 tiles per SM per step
+saved megakernel_dynamic/results/traces_v2/fp16_clc.npz
+
+##### fp8 atomic  [NVIDIA B200]  138520 tiles over 8 decode steps, 148 SMs, globaltimer step ~32 ns
+token step: 943.6 us traced | 919.9 us untraced (qwen_dps_C)
+
+per tile (mean us)  tiles/step   queue  dep-wait     prep  w-wait   other    busy
+  QKV                    3584    6.33    3.92     0.39    0.18    2.13    6.63
+  ATTN                   1792    6.33    3.74     0.00    0.00    1.53    5.27
+  O-proj                 3584    6.37    9.01     0.16    0.24    1.54   10.95
+  gate/up                3584    9.98    5.42     0.43    0.15    2.57    8.57
+  down                   3584    7.31    4.70     0.45    0.23    1.66    7.03
+  LM head                1187    6.65    0.72     0.06    0.38    6.25    7.40
+  queue = ticket waiting in the CTA's claim-ahead ring; dep-wait = waiting for the counters it reads;
+  other = dot products, reductions, barriers and the done-signal
+
+critical path    links/step  us/step   segment  handoff   spread  (mean us per link)
+  QKV                 28     180.3     6.44     0.27     6.17
+  ATTN                28     215.1     7.68    -2.94    10.62
+  O-proj              28     137.5     4.91     0.20     4.70
+  gate/up             28     192.4     6.87     0.24     6.63
+  down                28     154.1     5.50     0.26     5.25
+  LM head              1      64.3    64.33     0.19    64.14
+  sum                        943.6
+
+balance (mean per phase)  tiles  even share  busiest SM  SMs used  phase duration us
+  QKV                         128        0.86        1.96       115               6.17
+  ATTN                         64        0.43        1.91        53              10.67
+  O-proj                      128        0.86        2.00       105               4.70
+  gate/up                     128        0.86        2.00       107               6.63
+  down                        128        0.86        2.00       112               5.24
+
+SM time: 34% in tiles, 64% waiting on dependencies, 2% between tiles (mean gap 0.16 us); 117 tiles per SM per step
+saved megakernel_dynamic/results/traces_v2/fp8_atomic.npz
+
+##### fp8 static  [NVIDIA B200]  138520 tiles over 8 decode steps, 148 SMs, globaltimer step ~32 ns
+token step: 592.3 us traced | 581.8 us untraced (qwen_dps_C)
+
+per tile (mean us)  tiles/step   queue  dep-wait     prep  w-wait   other    busy
+  QKV                    3584    3.58    1.30     0.45    0.18    2.07    4.00
+  ATTN                   1792    4.02    1.61     0.00    0.00    1.79    3.40
+  O-proj                 3584    3.36    5.42     0.24    0.25    1.50    7.40
+  gate/up                3584    6.69    1.50     0.53    0.15    2.53    4.70
+  down                   3584    4.72    1.14     0.55    0.23    1.65    3.58
+  LM head                1187    6.35    0.30     0.06    0.37    6.26    6.99
+  queue = ticket waiting in the CTA's claim-ahead ring; dep-wait = waiting for the counters it reads;
+  other = dot products, reductions, barriers and the done-signal
+
+critical path    links/step  us/step   segment  handoff   spread  (mean us per link)
+  QKV                 28      92.7     3.31     0.22     3.09
+  ATTN                28     162.3     5.80     0.10     5.70
+  O-proj              28      75.3     2.69     0.21     2.48
+  gate/up             28     108.7     3.88     0.23     3.65
+  down                28      86.1     3.08     0.21     2.87
+  LM head              1      67.2    67.22     0.27    66.95
+  sum                        592.3
+
+balance (mean per phase)  tiles  even share  busiest SM  SMs used  phase duration us
+  QKV                         128        0.86        1.00       128               3.09
+  ATTN                         64        0.43        1.00        64               5.69
+  O-proj                      128        0.86        1.00       128               2.48
+  gate/up                     128        0.86        1.00       128               3.65
+  down                        128        0.86        1.00       128               2.87
+
+SM time: 55% in tiles, 42% waiting on dependencies, 3% between tiles (mean gap 0.16 us); 117 tiles per SM per step
+saved megakernel_dynamic/results/traces_v2/fp8_static.npz
+
+##### fp8 clc  [NVIDIA B200]  138520 tiles over 8 decode steps, 148 SMs, globaltimer step ~32 ns
+token step: 983.2 us traced | 958.0 us untraced (qwen_dps_C)
+
+per tile (mean us)  tiles/step   queue  dep-wait     prep  w-wait   other    busy
+  QKV                    3584    6.08    4.16     0.39    0.18    2.13    6.87
+  ATTN                   1792    6.34    3.91     0.00    0.00    1.51    5.43
+  O-proj                 3584    6.42    9.87     0.16    0.24    1.52   11.79
+  gate/up                3584   10.80    5.55     0.42    0.15    2.57    8.68
+  down                   3584    7.26    4.88     0.45    0.23    1.67    7.23
+  LM head                1187    6.50    0.73     0.06    0.37    6.28    7.44
+  queue = ticket waiting in the CTA's claim-ahead ring; dep-wait = waiting for the counters it reads;
+  other = dot products, reductions, barriers and the done-signal
+
+critical path    links/step  us/step   segment  handoff   spread  (mean us per link)
+  QKV                 28     180.3     6.44     0.27     6.17
+  ATTN                28     248.9     8.89    -2.95    11.84
+  O-proj              28     139.0     4.96     0.20     4.76
+  gate/up             28     193.6     6.92     0.20     6.71
+  down                28     156.6     5.59     0.23     5.36
+  LM head              1      64.7    64.69     0.17    64.51
+  sum                        983.2
+
+balance (mean per phase)  tiles  even share  busiest SM  SMs used  phase duration us
+  QKV                         128        0.86        1.96       115               6.17
+  ATTN                         64        0.43        1.94        53              11.76
+  O-proj                      128        0.86        2.00       105               4.76
+  gate/up                     128        0.86        2.00       106               6.71
+  down                        128        0.86        2.00       110               5.36
+
+SM time: 32% in tiles, 66% waiting on dependencies, 2% between tiles (mean gap 0.16 us); 117 tiles per SM per step
+saved megakernel_dynamic/results/traces_v2/fp8_clc.npz
+
+##### fp4 atomic  [NVIDIA B200]  138520 tiles over 8 decode steps, 148 SMs, globaltimer step ~32 ns
+token step: 973.2 us traced | 938.1 us untraced (qwen_dps_C)
+
+per tile (mean us)  tiles/step   queue  dep-wait     prep  w-wait   other    busy
+  QKV                    3584    6.77    4.10     0.39    0.19    2.22    6.90
+  ATTN                   1792    6.67    3.73     0.00    0.00    1.52    5.25
+  O-proj                 3584    6.41    8.99     0.17    0.25    1.58   10.99
+  gate/up                3584   10.00    5.39     0.44    0.16    2.79    8.78
+  down                   3584    7.60    4.96     0.44    0.07    1.96    7.43
+  LM head                1187    7.31    0.75     0.06    0.37    6.93    8.11
+  queue = ticket waiting in the CTA's claim-ahead ring; dep-wait = waiting for the counters it reads;
+  other = dot products, reductions, barriers and the done-signal
+
+critical path    links/step  us/step   segment  handoff   spread  (mean us per link)
+  QKV                 28     180.4     6.44     0.27     6.18
+  ATTN                28     214.9     7.68    -2.86    10.53
+  O-proj              28     141.6     5.06     0.20     4.86
+  gate/up             28     204.6     7.31     0.22     7.09
+  down                28     160.5     5.73     0.24     5.50
+  LM head              1      71.1    71.14     0.23    70.91
+  sum                        973.2
+
+balance (mean per phase)  tiles  even share  busiest SM  SMs used  phase duration us
+  QKV                         128        0.86        1.96       115               6.17
+  ATTN                         64        0.43        1.88        53              10.52
+  O-proj                      128        0.86        2.00       107               4.86
+  gate/up                     128        0.86        2.00       109               7.09
+  down                        128        0.86        2.00       112               5.49
+
+SM time: 34% in tiles, 64% waiting on dependencies, 2% between tiles (mean gap 0.16 us); 117 tiles per SM per step
+saved megakernel_dynamic/results/traces_v2/fp4_atomic.npz
+
+##### fp4 static  [NVIDIA B200]  138520 tiles over 8 decode steps, 148 SMs, globaltimer step ~32 ns
+token step: 610.7 us traced | 595.5 us untraced (qwen_dps_C)
+
+per tile (mean us)  tiles/step   queue  dep-wait     prep  w-wait   other    busy
+  QKV                    3584    3.75    1.33     0.44    0.19    2.18    4.14
+  ATTN                   1792    4.19    1.64     0.00    0.00    1.73    3.37
+  O-proj                 3584    3.43    5.37     0.24    0.25    1.55    7.41
+  gate/up                3584    6.67    1.51     0.52    0.16    2.75    4.94
+  down                   3584    4.93    1.17     0.55    0.07    1.96    3.74
+  LM head                1187    6.91    0.30     0.06    0.37    6.91    7.63
+  queue = ticket waiting in the CTA's claim-ahead ring; dep-wait = waiting for the counters it reads;
+  other = dot products, reductions, barriers and the done-signal
+
+critical path    links/step  us/step   segment  handoff   spread  (mean us per link)
+  QKV                 28      96.3     3.44     0.23     3.21
+  ATTN                28     160.3     5.73     0.09     5.63
+  O-proj              28      76.7     2.74     0.21     2.53
+  gate/up             28     114.4     4.09     0.23     3.85
+  down                28      89.9     3.21     0.22     2.99
+  LM head              1      73.0    73.01     0.20    72.81
+  sum                        610.7
+
+balance (mean per phase)  tiles  even share  busiest SM  SMs used  phase duration us
+  QKV                         128        0.86        1.00       128               3.21
+  ATTN                         64        0.43        1.00        64               5.62
+  O-proj                      128        0.86        1.00       128               2.53
+  gate/up                     128        0.86        1.00       128               3.86
+  down                        128        0.86        1.00       128               2.99
+
+SM time: 56% in tiles, 41% waiting on dependencies, 3% between tiles (mean gap 0.16 us); 117 tiles per SM per step
+saved megakernel_dynamic/results/traces_v2/fp4_static.npz
+
+##### fp4 clc  [NVIDIA B200]  138520 tiles over 8 decode steps, 148 SMs, globaltimer step ~32 ns
+token step: 995.0 us traced | 956.4 us untraced (qwen_dps_C)
+
+per tile (mean us)  tiles/step   queue  dep-wait     prep  w-wait   other    busy
+  QKV                    3584    6.53    4.16     0.39    0.18    2.24    6.97
+  ATTN                   1792    6.45    3.97     0.00    0.00    1.50    5.47
+  O-proj                 3584    6.38    9.36     0.17    0.25    1.60   11.37
+  gate/up                3584   10.33    5.51     0.44    0.16    2.79    8.89
+  down                   3584    7.50    5.03     0.45    0.07    1.97    7.52
+  LM head                1187    7.12    0.75     0.06    0.37    6.92    8.10
+  queue = ticket waiting in the CTA's claim-ahead ring; dep-wait = waiting for the counters it reads;
+  other = dot products, reductions, barriers and the done-signal
+
+critical path    links/step  us/step   segment  handoff   spread  (mean us per link)
+  QKV                 28     184.8     6.60     0.25     6.35
+  ATTN                28     229.9     8.21    -3.00    11.21
+  O-proj              28     142.8     5.10     0.20     4.90
+  gate/up             28     206.1     7.36     0.23     7.13
+  down                28     160.5     5.73     0.24     5.49
+  LM head              1      71.0    71.00     0.22    70.78
+  sum                        995.0
+
+balance (mean per phase)  tiles  even share  busiest SM  SMs used  phase duration us
+  QKV                         128        0.86        1.96       115               6.36
+  ATTN                         64        0.43        1.94        53              11.09
+  O-proj                      128        0.86        2.00       105               4.90
+  gate/up                     128        0.86        2.00       107               7.13
+  down                        128        0.86        2.00       111               5.48
+
+SM time: 34% in tiles, 64% waiting on dependencies, 2% between tiles (mean gap 0.16 us); 117 tiles per SM per step
+saved megakernel_dynamic/results/traces_v2/fp4_clc.npz
