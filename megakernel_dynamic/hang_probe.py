@@ -20,6 +20,7 @@ import cuda.bindings.runtime as rt
 import torch
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+os.environ.setdefault("DPS_CRUMBS", "1")   # per-CTA position markers, read below
 sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(HERE, "cutedsl"))
 from qwen_dps import SCHED_MODES, DpsDecoder, load_weights  # noqa: E402
@@ -53,6 +54,33 @@ def where(ticket, n_pre):
     return "?"
 
 
+COMPUTE_AT = {0: "not started", 1: "waiting on dependencies", 2: "running (deps done)",
+              3: "waiting for weight stage", 4: "tile done, fetching next"}
+LOAD_AT = {0: "not started", 1: "got ticket", 2: "waiting for a free stage", 3: "copies issued, fetching next"}
+
+
+def report_crumbs(rows, n_pre, n_ctas):
+    """Where each CTA's compute warps and load warp are (atomic mode: one CTA per SM)."""
+    from collections import Counter
+
+    def phase_of(t):
+        w = where(t, n_pre)
+        return w.split(", ")[-1].rsplit(" tile", 1)[0] if "tile" in w else w
+
+    rows = rows[:n_ctas]
+    print(f"\nper-CTA position ({len(rows)} CTAs)")
+    hist = Counter((COMPUTE_AT.get(r[1], r[1]), phase_of(r[0])) for r in rows)
+    for (at, ph), n in sorted(hist.items(), key=lambda kv: -kv[1]):
+        print(f"  compute: {n:4d} CTAs  {at:<26} on a {ph} tile")
+    hist = Counter((LOAD_AT.get(r[5], r[5]), phase_of(r[4])) for r in rows)
+    for (at, ph), n in sorted(hist.items(), key=lambda kv: -kv[1]):
+        print(f"  load:    {n:4d} CTAs  {at:<26} on a {ph} tile")
+    print("  first CTAs: cta | compute ticket, where, stage/parity | load ticket, where, stage/parity")
+    for i, r in enumerate(rows[:12]):
+        print(f"   {i:4d} | {r[0]:7d} {COMPUTE_AT.get(r[1], r[1])!s:<24} {r[2]}/{r[3]} | "
+              f"{r[4]:7d} {LOAD_AT.get(r[5], r[5])!s:<28} {r[6]}/{r[7]}")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--sched", default="atomic", choices=["atomic", "clc"])
@@ -73,6 +101,9 @@ def main():
     out = torch.full((args.max_new,), -1, dtype=torch.int32, device="cuda")
     sync = dec.ext.ws[:q.SYNC_BYTES].view(torch.int32)
     host = torch.empty(sync.numel(), dtype=torch.int32, pin_memory=True)
+    crumb_bytes = q.CRUMB_CTAS * q.CRUMB_INTS * 4
+    crumbs = dec.ext.ws[q.WS["crumbs"]:q.WS["crumbs"] + crumb_bytes].view(torch.int32)
+    crumbs_host = torch.empty(crumbs.numel(), dtype=torch.int32, pin_memory=True)
     err, side = rt.cudaStreamCreateWithFlags(rt.cudaStreamNonBlocking)
     assert err == rt.cudaError_t.cudaSuccess, err
     torch.cuda.synchronize()
@@ -103,6 +134,11 @@ def main():
                 step, layer = divmod(v // unit, q.NL)
                 print(f"  {name:<10} {v:>9}  = next: step {step} layer {layer}, {v % unit}/{unit} done")
         prev = vals
+    if q.CRUMBS:
+        rt.cudaMemcpyAsync(crumbs_host.data_ptr(), crumbs.data_ptr(), crumb_bytes,
+                           rt.cudaMemcpyKind.cudaMemcpyDeviceToHost, side)
+        rt.cudaStreamSynchronize(side)
+        report_crumbs(crumbs_host.view(q.CRUMB_CTAS, q.CRUMB_INTS).tolist(), n_pre, dec.ext.num_sms)
     if prev[q.C_LM_DONE] >= args.max_new:
         print("\nthe launch finished: not hung")
     os._exit(0)   # a hung kernel dies with the process

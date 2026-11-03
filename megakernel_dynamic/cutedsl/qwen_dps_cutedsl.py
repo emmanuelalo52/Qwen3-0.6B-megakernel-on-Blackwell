@@ -135,6 +135,7 @@ def _workspace_layout():
         ("attn_part", 4 * NKV * ATTN_SPLITS * 2 * (HD + 2)),
         ("lm_val", 4 * T_LM),
         ("lm_idx", 4 * T_LM),
+        ("crumbs", 4 * 1024 * 8),               # CRUMB_CTAS x CRUMB_INTS int32
     ]
     off, layout = 0, {}
     for name, size in sizes:
@@ -145,6 +146,11 @@ def _workspace_layout():
 
 WS, WS_BYTES = _workspace_layout()
 SYNC_BYTES = 4 * C_NUM * CSTRIDE
+
+# Debug markers (DPS_CRUMBS=1, set by hang_probe.py): per CTA, compute thread 0 and load-warp
+# lane 0 record their current ticket and where they are in it, so a hang can be located.
+CRUMBS = os.environ.get("DPS_CRUMBS", "0") == "1"
+CRUMB_CTAS, CRUMB_INTS = 1024, 8   # [compute ticket, code, stage, phase, load ticket, code, stage, phase]
 
 
 # inline PTX
@@ -394,6 +400,9 @@ class QwenDpsKernel:
         c.lm_val = cute.recast_ptr(ws + WS["lm_val"], dtype=Float32)
         c.lm_idx = cute.recast_ptr(ws + WS["lm_idx"], dtype=Int32)
         c.n_pre, c.total_tiles, c.start_pos, c.max_seq = n_pre, total_tiles, start_pos, max_seq
+        c.bid, _, _ = cute.arch.block_idx()
+        c.crumbs = cute.make_tensor(cute.recast_ptr(ws + WS["crumbs"], dtype=Int32),
+                                    cute.make_layout(CRUMB_CTAS * CRUMB_INTS))
         c.eos_token, c.attn_scale = eos_token, attn_scale
         c.clc_resp = st.clc_resp.data_ptr()
         c.clc_bar = st.clc_bar.data_ptr()
@@ -651,8 +660,15 @@ class QwenDpsKernel:
                 nch = Int32(0)
             if phase == PH_LM:
                 nch = Int32(LM_CHUNKS)
+            if c.lane == 0:
+                self.crumb(c, 4, t)
+                self.crumb(c, 5, 1)
             for ch in range(nch):
                 s0, d0, n0, s1, d1, n1, s2, d2, n2, s3, d3, n3 = self.chunk_segs(c, layer, phase, idx, ch)
+                if c.lane == 0:
+                    self.crumb(c, 5, 2)
+                    self.crumb(c, 6, ws_idx)
+                    self.crumb(c, 7, ws_ph)
                 cute.arch.mbarrier_wait(c.w_empty + ws_idx, ws_ph)
                 full = c.w_full + ws_idx
                 dst = wbuf_addr + ws_idx * self.SB
@@ -666,8 +682,26 @@ class QwenDpsKernel:
                     if n3 > 0:
                         bulk_g2s(dst + d3, s3, n3, full.toint(), policy)
                 ws_idx, ws_ph = ring_next(ws_idx, ws_ph, 1, self.W)
+            if c.lane == 0:
+                self.crumb(c, 5, 3)
             t = fetch_work(c, work_pipe, cons)
             cons.advance()
+
+    @cute.jit
+    def crumb(self, c, slot, value):
+        """DPS_CRUMBS=1 builds: record this CTA's position (call from one thread)."""
+        if const_expr(CRUMBS):
+            if c.bid < CRUMB_CTAS:
+                c.crumbs[c.bid * CRUMB_INTS + slot] = Int32(value)
+
+    @cute.jit
+    def crumb_wait(self, c, s, ph):
+        """Compute thread 0 is about to wait for weight stage s, parity ph."""
+        if const_expr(CRUMBS):
+            if c.tid == 0:
+                self.crumb(c, 1, 3)
+                self.crumb(c, 2, s)
+                self.crumb(c, 3, ph)
 
     # compute warps
     @cute.jit
@@ -811,6 +845,7 @@ class QwenDpsKernel:
         out = cute.make_tensor(c.qkv, cute.make_layout(QS + 2 * NKV * HD))
         xr = self.x_regs(c, H)
         wv = self.wview(c, H, QKV_ROWS)
+        self.crumb_wait(c, s, ph)
         cute.arch.mbarrier_wait(c.w_full + s, ph)
         for rr in cutlass.range_constexpr(QKV_ROWS // COMPUTE_WARPS):
             r = c.warp + rr * COMPUTE_WARPS
@@ -983,6 +1018,7 @@ class QwenDpsKernel:
         gs = mat_gscale(c, layer, M_O)
         xr = self.x_regs(c, QS)
         wv = self.wview(c, QS, O_ROWS)
+        self.crumb_wait(c, s, ph)
         cute.arch.mbarrier_wait(c.w_full + s, ph)
         d = self.row_dot(c, wv, xr, c.warp, s, O_ROWS * rb + c.warp * sb)
         if const_expr(self.fmt != FP16):
@@ -1013,6 +1049,7 @@ class QwenDpsKernel:
         xr = self.x_regs(c, H)
         wv = self.wview(c, H, 2 * GU_ROWS)   # rows 0..7 gate, 8..15 up
         sc_off = 2 * GU_ROWS * rb
+        self.crumb_wait(c, s, ph)
         cute.arch.mbarrier_wait(c.w_full + s, ph)
         g = self.row_dot(c, wv, xr, c.warp, s, sc_off + c.warp * sb)
         u = self.row_dot(c, wv, xr, GU_ROWS + c.warp, s, sc_off + (GU_ROWS + c.warp) * sb)
@@ -1044,6 +1081,7 @@ class QwenDpsKernel:
         khalf = c.warp % 2
         xr = self.x_regs(c, I // 2, khalf)
         wv = self.wview(c, I, D_ROWS, split=True)
+        self.crumb_wait(c, s, ph)
         cute.arch.mbarrier_wait(c.w_full + s, ph)
         acc = self.row_dot(c, wv, xr, r, s, D_ROWS * rb + r * sb, khalf * lane_groups(self.fmt, I // 2) * 32, khalf)
         self.stage_release(c, s)
@@ -1077,6 +1115,7 @@ class QwenDpsKernel:
         bi = Int32(0x7FFFFFFF)
         for ch in cutlass.range_constexpr(LM_CHUNKS):
             s, ph = ring_next(s0, ph0, ch, self.W)
+            self.crumb_wait(c, s, ph)
             cute.arch.mbarrier_wait(c.w_full + s, ph)
             for rr in cutlass.range_constexpr(LM_CHUNK_ROWS // COMPUTE_WARPS):
                 r = c.warp + rr * COMPUTE_WARPS
@@ -1155,7 +1194,10 @@ class QwenDpsKernel:
         while t >= 0:
             step, layer, phase, idx = self.decode_tile(c, t)
             if c.tid == 0:
+                self.crumb(c, 0, t)
+                self.crumb(c, 1, 1)
                 self.wait_deps(c, step, layer, phase, idx)
+                self.crumb(c, 1, 2)
             group_bar()
             nch = Int32(1)
             if phase == PH_QKV:
@@ -1173,6 +1215,8 @@ class QwenDpsKernel:
                 self.tile_lm(c, step, idx, ws_idx, ws_ph)
                 nch = Int32(LM_CHUNKS)
             ws_idx, ws_ph = ring_next(ws_idx, ws_ph, nch, self.W)
+            if c.tid == 0:
+                self.crumb(c, 1, 4)
             t = fetch_work(c, work_pipe, cons)
             cons.advance()
 
